@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
+    'import_goods.apps.ImportGoodsConfig',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +119,24 @@ API_VERSION = 'v1'
 
 # Название проекта для админки
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'Project Name')
+
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 86400,
+}
+CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {
+    'visibility_timeout': 86400,
+}
+CELERY_VISIBILITY_TIMEOUT = 86400
+CELERY_BEAT_SCHEDULE = {
+    'check-scheduled-tasks': {
+        'task': 'import_goods.tasks.check_scheduled_tasks',
+        'schedule': 60.0,
+    },
+}

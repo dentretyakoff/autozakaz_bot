@@ -3,7 +3,8 @@ import logging
 from django.utils import timezone
 
 from core import celery_app
-from import_goods.models import ImportTask
+from .models import ImportTask
+from .import_csv import CSVImport
 
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,8 @@ def import_goods(task_id: int):
     logger.info(f'Запущена задача скачивания прайс-листов: {task.name}')
     prices = task.prices.all()
     for price in prices:
+        downloader = CSVImport(csv_price=price)
+        downloader.import_csv()
         logger.info(f'Прайс {price.name} загружен.')
     task.last_run = timezone.localtime()
     task.save(update_fields=['last_run'])

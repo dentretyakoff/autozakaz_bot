@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
     'import_goods.apps.ImportGoodsConfig',
+    'products.apps.ProductsConfig',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 60.0,
     },
 }
+
+# Каталог для временных файлов импорта
+TEMP_DIR = BASE_DIR / 'temp'
+os.makedirs(TEMP_DIR, exist_ok=True)

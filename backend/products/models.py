@@ -73,7 +73,7 @@ class Product(BaseModel):
     class Meta:
         verbose_name = 'Деталь'
         verbose_name_plural = 'Детали'
-        ordering = ('-is_actual', 'name', 'manufacturer__name')
+        ordering = ('-is_actual', 'name')
 
     def __str__(self):
         return f'{self.name}: {self.code}'

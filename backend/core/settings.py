@@ -12,6 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'Develop_KEY')
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+INTERNAL_IPS = ['127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,12 +21,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'rest_framework',
     'rest_framework.authtoken',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
     'import_goods.apps.ImportGoodsConfig',
     'products.apps.ProductsConfig',
+    'about.apps.AboutConfig',
 ]
 
 MIDDLEWARE = [
@@ -36,14 +39,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
 
+STATICFILES_DIRS = [BASE_DIR / 'static']
+TEMPLATES_DIR = BASE_DIR / 'templates'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -51,6 +57,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'base.context_processors.year.year',
+                'base.context_processors.project_name.project_name',
             ],
         },
     },
@@ -145,3 +153,5 @@ CELERY_BEAT_SCHEDULE = {
 # Каталог для временных файлов импорта
 TEMP_DIR = BASE_DIR / 'temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
+
+PAGINATE_BY = 10

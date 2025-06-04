@@ -1,0 +1,35 @@
+<!-- templates/about/oferta.html -->
+
+{% extends 'base.html' %}
+
+{% load markdown_filter %}
+
+{% block title %}
+  {{ project_name }} | Оферта
+{% endblock %}
+
+{% block content %}
+  {% if oferta %}
+    <div class="card border-warning-subtle mb-4">
+      <div class="card-header bg-warning-subtle text-dark">
+        <h5 class="card-title mb-0">Договор оферты</h5>
+      </div>
+      <div class="card-body">
+        <div class="oferta-item mb-3">
+          <div class="d-flex align-items-center">
+            <div>
+              <p class="mb-0">{{ oferta.text|markdown }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card border-secondary">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-exclamation-circle fs-1 text-muted"></i>
+        <p class="mt-3 mb-0">Договор оферты появится скоро</p>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

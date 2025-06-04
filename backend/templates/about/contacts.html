@@ -1,0 +1,65 @@
+<!-- templates/about/contacts.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ project_name }} | Контакты
+{% endblock %}
+
+{% block content %}
+  {% if contacts %}
+    <div class="card border-warning-subtle mb-4">
+      <div class="card-header bg-warning-subtle text-dark">
+        <h5 class="card-title mb-0">Наши контакты</h5>
+      </div>
+      <div class="card-body">
+        <div class="contact-item mb-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-bank me-3 fs-4 text-warning"></i>
+            <div>
+              <h6 class="mb-1 text-muted">Реквизиты</h6>
+              <p class="mb-0">{{ contacts.requisites|linebreaks }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-item mb-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-geo-alt me-3 fs-4 text-warning"></i>
+            <div>
+              <h6 class="mb-1 text-muted">Адрес</h6>
+              <p class="mb-0">{{ contacts.address }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-item mb-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-telephone me-3 fs-4 text-warning"></i>
+            <div>
+              <h6 class="mb-1 text-muted">Телефон</h6>
+              <p class="mb-0">{{ contacts.phone }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-envelope me-3 fs-4 text-warning"></i>
+            <div>
+              <h6 class="mb-1 text-muted">Email</h6>
+              <p class="mb-0">{{ contacts.email }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card border-secondary">
+      <div class="card-body text-center py-4">
+        <i class="bi bi-exclamation-circle fs-1 text-muted"></i>
+        <p class="mt-3 mb-0">Контактная информация появится скоро</p>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

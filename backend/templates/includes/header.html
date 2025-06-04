@@ -1,0 +1,48 @@
+<!-- templates/includes/header.html -->
+
+<nav class="navbar navbar-expand-lg bg-warning-subtle">
+  <div class="container">
+
+    {% load static %}
+
+    <div class="d-flex align-items-center gap-4">
+      <!-- Логотип -->
+      <a class="navbar-brand d-flex align-items-center mb-0" href="{% url 'products:products' %}">
+        <img
+          src="{% static 'img/logo.png' %}"
+          width="30"
+          height="30"
+          class="d-inline-block align-top me-2"
+          alt="">
+        {{ project_name }}
+      </a>
+
+      <!-- Меню -->
+      <ul class="nav nav-pills mb-0 py-2">
+        {% with request.resolver_match.view_name as view_name %}
+          <li class="nav-item">
+            <a class="nav-link text-dark {% if view_name == 'products:products' %}active bg-warning text-white fw-bold{% endif %}"
+               href="{% url 'products:products' %}">
+              Каталог
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark {% if view_name == 'about:contacts' %}active bg-warning text-white fw-bold{% endif %}"
+               href="{% url 'about:contacts' %}">
+              Контакты
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark {% if view_name == 'about:oferta' %}active bg-warning text-white fw-bold{% endif %}"
+               href="{% url 'about:oferta' %}">
+              Оферта
+            </a>
+          </li>
+        {% endwith %}
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+

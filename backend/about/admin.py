@@ -14,7 +14,8 @@ class ContactAdmin(TimeStampedAdmin):
         'email',
         'is_actual'
     )
-    list_display_links = ('id', 'requisites')
+    list_display_links = ('requisites',)
+    readonly_fields = ('id',)
 
 
 @admin.register(Oferta)
@@ -24,4 +25,5 @@ class OfertaAdmin(TimeStampedAdmin):
         'name',
         'is_actual'
     )
-    list_display_links = ('id', 'name')
+    list_display_links = ('name',)
+    readonly_fields = ('id',)

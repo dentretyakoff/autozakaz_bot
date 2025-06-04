@@ -7,21 +7,23 @@ from .models import Manufacturer, Product, PriceMarkup
 @admin.register(Manufacturer)
 class ManufacturerAdmin(TimeStampedAdmin):
     list_display = ('id', 'name')
+    list_display_links = ('name',)
+    readonly_fields = ('id',)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
-        'id',
-        'manufacturer',
-        'code',
         'product_code',
         'name',
+        'manufacturer',
+        'code',
         'price',
         'period_min',
         'is_actual',
     )
     readonly_fields = (
+        'id',
         'manufacturer',
         'code',
         'product_code',
@@ -29,11 +31,18 @@ class ProductAdmin(admin.ModelAdmin):
         'period_min',
         'csv_price',
     )
-    list_display_links = ('id', 'name')
-    search_fields = ('id', 'name', 'code', 'manufacturer__name')
+    list_display_links = ('name',)
+    search_fields = (
+        'id',
+        'name',
+        'code',
+        'manufacturer__name',
+        'product_code'
+    )
     list_filter = ('is_actual',)
 
 
 @admin.register(PriceMarkup)
 class PriceMarkupAdmin(TimeStampedAdmin):
     list_display = ('id', 'threshold', 'percent')
+    list_display_links = ('threshold',)

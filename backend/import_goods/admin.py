@@ -23,13 +23,16 @@ class WordToDropAdmin(TimeStampedAdmin):
 @admin.register(CSVPrice)
 class CSVPriceAdmin(TimeStampedAdmin):
     list_display = (
+        'id',
         'name',
         'url',
         'period_min',
         'new_period_min',
         'price_filter',
     )
+    list_display_links = ('name',)
     filter_horizontal = ('ignored_manufacturers',)
+    readonly_fields = ('id',)
 
 
 @admin.register(ImportTask)
@@ -43,8 +46,8 @@ class ImportTaskAdmin(admin.ModelAdmin):
         'last_run',
         'run_now_button',
     )
-    readonly_fields = ('scheduled_at', 'last_run')
-    list_display_links = ('id', 'name')
+    readonly_fields = ('id', 'scheduled_at', 'last_run')
+    list_display_links = ('name',)
     search_fields = ('id', 'name')
     list_filter = ('active',)
     filter_horizontal = ('prices',)

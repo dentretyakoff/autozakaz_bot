@@ -1,0 +1,18 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Autozakaz backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "celery[redis]>=5.5.3",
+    "django>=5.2.1",
+    "django-debug-toolbar>=5.2.0",
+    "django-filter>=25.1",
+    "djangorestframework>=3.16.0",
+    "markdown>=3.8",
+    "pandas>=2.2.3",
+    "psycopg2-binary>=2.9.10",
+    "python-dotenv>=1.1.0",
+    "wget>=3.2",
+]

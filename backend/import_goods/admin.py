@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from django.urls import path
+from django.urls import path, reverse
 from django.utils.html import format_html
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
@@ -62,15 +62,22 @@ class ImportTaskAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def run_now_button(self, obj):
+        url = reverse('admin:importtask_run_now', args=[obj.id])
         return format_html(
-            '<a class="button" style="padding:2px 5px;background:#28a745;color:white;border-radius:3px;" href="{}">Запустить</a>',  # noqa
-            f'{obj.id}/run-now/'
+            ('<a class="button" style="padding:2px 5px;background:#28a745;'
+             f'color:white;border-radius:3px;" href="{url}">Запустить</a>')
         )
     run_now_button.short_description = 'Ручной запуск'
 
     def run_now_view(self, request, task_id):
         task = get_object_or_404(ImportTask, pk=task_id)
-        import_goods.delay(task.id)
+        try:
+            import_goods.delay(task.id)
+        except Exception as e:
+            self.message_user(
+                request, f'Ошибка при запуске Celery: {e}',
+                level=messages.ERROR)
+            return redirect(request.META.get('HTTP_REFERER', '/admin/'))
         task.scheduled_at = timezone.localtime()
         task.save(update_fields=['scheduled_at'])
         self.message_user(

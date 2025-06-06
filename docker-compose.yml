@@ -21,6 +21,7 @@ services:
     env_file:
       - .env
     environment:
+      - REDIS_HOST=redis
       - DB_HOST=db
       - DEBUG=False
     command: >

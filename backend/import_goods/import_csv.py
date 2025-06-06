@@ -51,17 +51,20 @@ class CSVImport:
         ignored = set(self.csv_price.ignored_manufacturers.values_list('name', flat=True))  # noqa
         df = df[~df[COLUMN_MANUFACTURER].isin(ignored)]
 
-        self.drop_by_words(df)
+        df = self.drop_by_words(df)
         self.create_in_db(df)
         os.remove(csv_file)
 
-    def drop_by_words(self, df: DataFrame) -> None:
-        columns = CSVColumn.objects.filter(drop_by_words=True)
-        words = WordToDrop.objects.all()
+    def drop_by_words(self, df: DataFrame) -> DataFrame:
+        columns = list(CSVColumn.objects.filter(drop_by_words=True)
+                       .values_list('name', flat=True))
+        words = list(WordToDrop.objects.all().values_list('word', flat=True))
         if columns and words:
             df = df[~df[columns].apply(
                 lambda x: x.str.contains('|'.join(words))).any(
                 axis=1)]
+
+        return df
 
     def increase_price(self, price: float) -> int:
         if price is None:

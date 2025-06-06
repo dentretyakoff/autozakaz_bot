@@ -23,6 +23,7 @@ class OfertaAdmin(TimeStampedAdmin):
     list_display = (
         'id',
         'name',
+        'oferta_file',
         'is_actual'
     )
     list_display_links = ('name',)

@@ -45,6 +45,12 @@ class Oferta(BaseModel):
         default=False,
         verbose_name='Актуальна'
     )
+    oferta_file = models.FileField(
+        upload_to='oferta_files/',
+        blank=True,
+        null=True,
+        verbose_name='Файл'
+    )
 
     class Meta:
         verbose_name = 'Оферта'

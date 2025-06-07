@@ -74,6 +74,11 @@ class Product(BaseModel):
         verbose_name = 'Деталь'
         verbose_name_plural = 'Детали'
         ordering = ('-is_actual', 'name')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('manufacturer', 'code', 'csv_price'),
+                name='unique_product_per_csv')
+        ]
 
     def __str__(self):
         return f'{self.name}: {self.code}'

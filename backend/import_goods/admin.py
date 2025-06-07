@@ -5,7 +5,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 
 from base.admin import TimeStampedAdmin
-from .models import CSVPrice, ImportTask, CSVColumn, WordToDrop
+from .models import CSVPrice, ImportTask, CSVColumn, WordToDrop, CsvImportLog
 from .tasks import import_goods
 
 
@@ -86,3 +86,24 @@ class ImportTaskAdmin(admin.ModelAdmin):
             level=messages.SUCCESS
         )
         return redirect(request.META.get('HTTP_REFERER', '/admin/'))
+
+
+@admin.register(CsvImportLog)
+class CsvImportLogAdmin(admin.ModelAdmin):
+    list_display = ('created_at', 'level', 'message_short')
+    list_filter = ('level',)
+    search_fields = ('message',)
+    readonly_fields = (
+        'created_at',
+        'level',
+        'message',
+        'content_type',
+        'object_id'
+    )
+
+    def message_short(self, obj):
+        return obj.message[:80] + '...' if len(obj.message) > 80 else obj.message  # noqa
+    message_short.short_description = 'Сообщение'
+
+    def has_add_permission(self, request):
+        return False

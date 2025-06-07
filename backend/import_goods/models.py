@@ -1,6 +1,8 @@
 from django.db import models
 
-from base.models import BaseModel
+from base.models import BaseModel, BaseLogModel
+from base.managers import get_specific_content_type_manager
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class CSVPrice(BaseModel):
@@ -36,6 +38,7 @@ class CSVPrice(BaseModel):
         blank=True,
         related_name='ignored_in_prices'
     )
+    logs = GenericRelation('CsvImportLog')
 
     class Meta:
         verbose_name = 'Прайс поставщика'
@@ -122,3 +125,15 @@ class WordToDrop(BaseModel):
 
     def __str__(self):
         return self.word
+
+
+class CsvImportLog(BaseLogModel):
+    """Лог для импорта прайс-листа."""
+    objects = get_specific_content_type_manager(CSVPrice)
+
+    class Meta:
+        verbose_name = 'Лог импорта'
+        verbose_name_plural = 'Логи импорта'
+
+    def __str__(self):
+        return self.message[:30]

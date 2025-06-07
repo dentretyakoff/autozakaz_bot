@@ -9,6 +9,7 @@ class ManufacturerAdmin(TimeStampedAdmin):
     list_display = ('id', 'name')
     list_display_links = ('name',)
     readonly_fields = ('id',)
+    search_fields = ('name',)
 
 
 @admin.register(Product)

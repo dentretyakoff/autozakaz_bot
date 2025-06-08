@@ -3,7 +3,8 @@
 {% load pagination_tags %}
 {% if page_obj.has_other_pages %}
   <nav aria-label="Page navigation" class="my-5 mb-0">
-    <ul class="pagination justify-content-center">
+    <!-- Десктопная версия -->
+    <ul class="pagination justify-content-center d-none d-sm-flex flex-wrap">
       <!-- Предыдущая страница -->
       {% if page_obj.has_previous %}
         <li class="page-item">
@@ -54,6 +55,42 @@
           <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query_params %}&{{ query_params }}{% endif %}">
             &raquo;
           </a>
+        </li>
+      {% endif %}
+    </ul>
+
+    <!-- Мобильная версия -->
+    <ul class="pagination justify-content-center d-flex d-sm-none">
+      {% if page_obj.number > 1 %}
+        <!-- На первую -->
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if query_params %}&{{ query_params }}{% endif %}">&laquo;&laquo;</a>
+        </li>
+      {% endif %}
+
+      {% if page_obj.has_previous %}
+        <!-- Назад -->
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query_params %}&{{ query_params }}{% endif %}">&laquo;</a>
+        </li>
+      {% endif %}
+
+      <!-- Текущая страница -->
+      <li class="page-item active">
+        <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      </li>
+
+      {% if page_obj.has_next %}
+        <!-- Вперёд -->
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query_params %}&{{ query_params }}{% endif %}">&raquo;</a>
+        </li>
+      {% endif %}
+
+      {% if page_obj.number < page_obj.paginator.num_pages %}
+        <!-- На последнюю -->
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query_params %}&{{ query_params }}{% endif %}">&raquo;&raquo;</a>
         </li>
       {% endif %}
     </ul>

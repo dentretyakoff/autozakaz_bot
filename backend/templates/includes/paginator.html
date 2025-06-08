@@ -1,5 +1,6 @@
 <!-- templates/includes/paginator.html -->
 
+{% load pagination_tags %}
 {% if page_obj.has_other_pages %}
   <nav aria-label="Page navigation" class="my-5 mb-0">
     <ul class="pagination justify-content-center">
@@ -22,8 +23,8 @@
       {% endif %}
       <!-- Основной диапазон страниц -->
       {% with start=page_obj.number|add:'-4' end=page_obj.number|add:'5' %}
-        {% for i in page_obj.paginator.page_range %}
-          {% if i >= start and i <= end %}
+        {% for i in start|get_range:end %}
+          {% if i >= 1 and i <= page_obj.paginator.num_pages %}
             {% if page_obj.number == i %}
               <li class="page-item active">
                 <span class="page-link">{{ i }}</span>

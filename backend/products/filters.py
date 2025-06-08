@@ -21,8 +21,8 @@ class ProductFilter(django_filters.FilterSet):
 
     def filter_by_all(self, queryset, name, value):
         return queryset.filter(
-            Q(name__icontains=value) |
-            Q(code__icontains=value) |
-            Q(product_code__icontains=value) |
+            Q(name__startswith=value) |
+            Q(code__iexact=value.upper()) |
+            Q(product_code__iexact=value.upper()) |
             Q(manufacturer__name__iexact=value)
         )

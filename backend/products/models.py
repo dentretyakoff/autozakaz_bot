@@ -9,6 +9,7 @@ from import_goods.models import CSVPrice
 class Manufacturer(BaseModel):
     name = models.CharField(
         max_length=255,
+        db_index=True,
         verbose_name='Наименование',
         unique=True
     )
@@ -29,10 +30,12 @@ class Product(BaseModel):
     )
     code = models.CharField(
         max_length=150,
+        db_index=True,
         verbose_name='Код'
     )
     name = models.CharField(
         max_length=255,
+        db_index=True,
         verbose_name='Наименование'
     )
     description = models.TextField(
@@ -66,6 +69,7 @@ class Product(BaseModel):
     product_code = models.CharField(
         max_length=6,
         verbose_name='Артикул товара',
+        db_index=True,
         blank=True,
         null=True
     )
@@ -73,7 +77,7 @@ class Product(BaseModel):
     class Meta:
         verbose_name = 'Деталь'
         verbose_name_plural = 'Детали'
-        ordering = ('-is_actual', 'name')
+        ordering = ('name',)
         constraints = [
             models.UniqueConstraint(
                 fields=('manufacturer', 'code', 'csv_price'),

@@ -9,14 +9,33 @@
 {% block content %}
   <div class="card border-0 shadow-sm mb-3">
     <div class="card-body">
-      <form method="get" class="mb-2">
+      <form method="get" class="mb-2" id="search-form">
         <div class="input-group">
           {{ filter.form.search }}
-          <button class="btn btn-warning" type="submit">
+          <button id="search-btn" class="btn btn-warning rounded-end" type="submit">
             <i class="bi bi-search"></i>
           </button>
+          <div id="search-spinner" class="d-none">
+            <span class="input-group-text bg-white border-0 rounded-end">
+              <div class="spinner-border spinner-border-sm text-warning" role="status">
+              </div>
+            </span>
+          </div>
         </div>
       </form>
+      <script>
+        const form = document.getElementById('search-form');
+        const input = form.querySelector('input');
+        const button = document.getElementById('search-btn');
+        const spinner = document.getElementById('search-spinner');
+
+        form.addEventListener('submit', function () {
+          input.readOnly = true;
+          input.blur();
+          button.classList.add('d-none');
+          spinner.classList.remove('d-none');
+        });
+      </script>
     </div>
   </div>
 

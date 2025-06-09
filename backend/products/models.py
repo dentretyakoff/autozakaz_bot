@@ -57,7 +57,14 @@ class Product(BaseModel):
     )
     is_actual = models.BooleanField(
         default=True,
-        verbose_name='Актуальна'
+        verbose_name='Актуальна',
+        help_text=('Если задан, значит был успешно загружен '
+                   'при последнем импорте')
+    )
+    is_published = models.BooleanField(
+        default=True,
+        verbose_name='Опубликована',
+        help_text='Если задан, товар будет отображаться на сайте'
     )
     csv_price = models.ForeignKey(
         CSVPrice,

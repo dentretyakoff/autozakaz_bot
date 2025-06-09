@@ -159,8 +159,7 @@ class CSVImport:
             batch_size=5000,
             update_conflicts=True,
             unique_fields=('manufacturer', 'code', 'csv_price'),
-            update_fields=('name', 'description', 'price',
-                           'period_min', 'is_actual')
+            update_fields=('description', 'price', 'period_min', 'is_actual')
         )
 
     def update_product_codes(self, batch_size=100_000):

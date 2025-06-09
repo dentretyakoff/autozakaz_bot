@@ -12,6 +12,18 @@ class ManufacturerAdmin(TimeStampedAdmin):
     search_fields = ('name',)
 
 
+@admin.action(description='Опубликовать выбранные')
+def publish_selected(modeladmin, request, queryset):
+    updated = queryset.update(is_published=True)
+    modeladmin.message_user(request, f'Обновлено {updated} объектов.')
+
+
+@admin.action(description='Снять с публикации')
+def unpublish_selected(modeladmin, request, queryset):
+    updated = queryset.update(is_published=False)
+    modeladmin.message_user(request, f'Обновлено {updated} объектов.')
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
@@ -22,15 +34,16 @@ class ProductAdmin(admin.ModelAdmin):
         'price',
         'period_min',
         'is_actual',
+        'is_published'
     )
     readonly_fields = (
         'id',
         'manufacturer',
         'code',
         'product_code',
-        'name',
         'period_min',
         'csv_price',
+        'is_actual',
     )
     list_display_links = ('name',)
     search_fields = (
@@ -40,7 +53,11 @@ class ProductAdmin(admin.ModelAdmin):
         'manufacturer__name',
         'product_code'
     )
-    list_filter = ('is_actual',)
+    list_filter = ('is_actual', 'is_published')
+    actions = [publish_selected, unpublish_selected]
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(PriceMarkup)

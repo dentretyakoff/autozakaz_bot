@@ -13,6 +13,11 @@ class Products(FilterView):
     paginate_by = settings.PAGINATE_BY
     filterset_class = ProductFilter
 
+    def get_queryset(self):
+        return (Product.objects
+                .filter(is_published=True)
+                .select_related('manufacturer'))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         query_params = self.request.GET.copy()

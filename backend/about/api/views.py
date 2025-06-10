@@ -5,5 +5,5 @@ from .serializers import ContactSerializer
 
 
 class ContactViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Contact.objects.all()
+    queryset = Contact.objects.filter(is_actual=True)
     serializer_class = ContactSerializer

@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
     'import_goods.apps.ImportGoodsConfig',
@@ -71,6 +72,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': int(os.getenv('PAGE_SIZE', 10))
 }
@@ -155,3 +157,11 @@ TEMP_DIR = BASE_DIR / 'temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 PAGINATE_BY = 10
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': f'{PROJECT_NAME} API',
+    'DESCRIPTION': 'Описание API',
+    'VERSION': API_VERSION,
+    'SERVE_INCLUDE_SCHEMA': False,
+}

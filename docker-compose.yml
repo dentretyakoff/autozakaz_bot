@@ -30,6 +30,7 @@ services:
         python manage.py migrate &&
         python manage.py collectstatic --noinput &&
         python manage.py create_admin &&
+        python manage.py create_bot_user &&
         cp -r /app/collected_static/. /backend_static/ &&
         gunicorn --bind 0.0.0.0:8000 core.wsgi"
     depends_on:
@@ -117,6 +118,18 @@ services:
       - 6379
     volumes:
       - redis_data:/data
+
+  bot:
+    build:
+      context: ./bot
+    restart: always
+    command: python main.py
+    env_file:
+      - .env
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      - backend
 
 volumes:
   pg_data:

@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_meili',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
     'import_goods.apps.ImportGoodsConfig',
@@ -165,4 +166,13 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Описание API',
     'VERSION': API_VERSION,
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+MEILISEARCH = {
+    'HTTPS': False,
+    'HOST': os.getenv('MEILI_HOST', 'localhost'),
+    'MASTER_KEY': os.getenv('MEILI_MASTER_KEY'),
+    'PORT': os.getenv('MEILI_PORT', '7700'),
+    'DEBUG': DEBUG,
+    'DEFAULT_BATCH_SIZE': 1000,
 }

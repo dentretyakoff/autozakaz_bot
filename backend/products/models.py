@@ -1,6 +1,7 @@
 import string
 
 from django.db import models
+from django_meili.models import IndexMixin
 
 from base.models import BaseModel
 from import_goods.models import CSVPrice
@@ -22,7 +23,7 @@ class Manufacturer(BaseModel):
         return self.name
 
 
-class Product(BaseModel):
+class Product(IndexMixin, BaseModel):
     manufacturer = models.ForeignKey(
         Manufacturer,
         verbose_name='Производитель',
@@ -90,6 +91,10 @@ class Product(BaseModel):
                 fields=('manufacturer', 'code', 'csv_price'),
                 name='unique_product_per_csv')
         ]
+
+    class MeiliMeta:
+        searchable_fields = ('code', 'product_code')
+        filterable_fields = ('is_published',)
 
     def __str__(self):
         return f'{self.name}: {self.code}'

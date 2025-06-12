@@ -24,21 +24,39 @@ services:
       - REDIS_HOST=redis
       - DB_HOST=db
       - DEBUG=False
+      - MEILI_HOST=meilisearch
     command: >
       sh -c "
         python manage.py migrate &&
         python manage.py collectstatic --noinput &&
         python manage.py create_admin &&
+        python manage.py create_bot_user &&
         cp -r /app/collected_static/. /backend_static/ &&
         gunicorn --bind 0.0.0.0:8000 core.wsgi"
     depends_on:
       db:
+        condition: service_healthy
+      meilisearch: 
         condition: service_healthy
     expose:
       - 8000
     volumes:
       - static:/backend_static
       - media:/app/media_files
+
+  meilisearch:
+    image: getmeili/meilisearch
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env
+    volumes:
+      - meili_data:/meili_data
+
 
   celery-worker-backend:
     build:
@@ -51,6 +69,7 @@ services:
       - REDIS_HOST=redis
       - DB_HOST=db
       - DEBUG=False
+      - MEILI_HOST=meilisearch
     depends_on:
       backend:
         condition: service_started
@@ -68,6 +87,7 @@ services:
       - REDIS_HOST=redis
       - DB_HOST=db
       - DEBUG=False
+      - MEILI_HOST=meilisearch
     depends_on:
       backend:
         condition: service_started
@@ -99,8 +119,21 @@ services:
     volumes:
       - redis_data:/data
 
+  bot:
+    build:
+      context: ./bot
+    restart: always
+    command: python main.py
+    env_file:
+      - .env
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+    depends_on:
+      - backend
+
 volumes:
   pg_data:
   redis_data:
   static:
   media:
+  meili_data:

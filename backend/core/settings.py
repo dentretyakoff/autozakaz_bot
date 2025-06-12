@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
+    'django_meili',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
     'import_goods.apps.ImportGoodsConfig',
@@ -71,6 +73,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': int(os.getenv('PAGE_SIZE', 10))
 }
@@ -155,3 +159,20 @@ TEMP_DIR = BASE_DIR / 'temp'
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 PAGINATE_BY = 10
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': f'{PROJECT_NAME} API',
+    'DESCRIPTION': 'Описание API',
+    'VERSION': API_VERSION,
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+MEILISEARCH = {
+    'HTTPS': False,
+    'HOST': os.getenv('MEILI_HOST', 'localhost'),
+    'MASTER_KEY': os.getenv('MEILI_MASTER_KEY'),
+    'PORT': os.getenv('MEILI_PORT', '7700'),
+    'DEBUG': DEBUG,
+    'DEFAULT_BATCH_SIZE': 1000,
+}

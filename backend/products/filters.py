@@ -14,6 +14,14 @@ class ProductFilter(django_filters.FilterSet):
             'placeholder': 'Поиск детали...'
         })
     )
+    search_bot = django_filters.CharFilter(
+        method='filter_by_code',
+        label='',
+    )
+    meilisearch = django_filters.CharFilter(
+        method='filter_meilisearch',
+        label='',
+    )
 
     class Meta:
         model = Product
@@ -26,3 +34,19 @@ class ProductFilter(django_filters.FilterSet):
             Q(product_code__iexact=value.upper()) |
             Q(manufacturer__name__iexact=value)
         )
+
+    def filter_by_code(self, queryset, name, value):
+        qs = queryset.filter(
+            Q(code__iexact=value.upper()) |
+            Q(product_code__iexact=value.upper())
+        )
+        documents = []
+        for p in qs:
+            doc = p.meili_serialize() | {'id': str(p.pk), 'pk': str(p.pk)}
+            documents.append(doc)
+        if documents:
+            Product.meilisearch.index.add_documents(documents)
+        return qs
+
+    def filter_meilisearch(self, queryset, name, value):
+        return Product.meilisearch.search(value).filter(is_published=True)

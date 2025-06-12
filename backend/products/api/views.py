@@ -6,7 +6,9 @@ from products.filters import ProductFilter
 from .serializers import ProductSerializer
 
 
-class ProductViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ProductViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     viewsets.GenericViewSet):
     queryset = Product.objects.filter(is_published=True)
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]

@@ -24,15 +24,15 @@ def make_message_contacts(contacts: dict) -> str:
 def make_product_text(product: dict) -> str:
     """Подготавливает сообщение с деталями о товаре."""
     text = ''
-    text += f'{product.get("name")}\n\n'
-    text += f'Производитель: {product.get("manufacturer")}\n'
-    text += f'Код: {product.get("code")}\n'
-    text += f'Артикул: {product.get("product_code")}\n\n'
+    text += f'🏷 {product.get("name")}\n\n'
+    text += f'🏭 Производитель: {product.get("manufacturer")}\n'
+    text += f'🌐 Код: {product.get("code")}\n'
+    text += f'🔤 Артикул: {product.get("product_code")}\n\n'
     description = product.get("description")
     if description:
-        text += f'Описание:\n{description[:MAX_LEN_DESCRIPTION]}\n\n'
-    text += f'Срок доставки(рабочие дни): {product.get("period_min")}\n\n'
-    text += f'Цена: {product.get("price")} ₽\n'
+        text += f'📖 Описание:\n{description[:MAX_LEN_DESCRIPTION]}\n\n'
+    text += f'🕐 Срок доставки(рабочие дни): {product.get("period_min")}\n\n'
+    text += f'💰 Цена: {product.get("price")} ₽\n'
     return text
 
 

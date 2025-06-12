@@ -14,6 +14,10 @@ class ProductFilter(django_filters.FilterSet):
             'placeholder': 'Поиск детали...'
         })
     )
+    search_bot = django_filters.CharFilter(
+        method='filter_by_code',
+        label='',
+    )
     meilisearch = django_filters.CharFilter(
         method='filter_meilisearch',
         label='',
@@ -24,11 +28,17 @@ class ProductFilter(django_filters.FilterSet):
         fields = []
 
     def filter_by_all(self, queryset, name, value):
-        qs = queryset.filter(
+        return queryset.filter(
             Q(name__startswith=value) |
             Q(code__iexact=value.upper()) |
             Q(product_code__iexact=value.upper()) |
             Q(manufacturer__name__iexact=value)
+        )
+
+    def filter_by_code(self, queryset, name, value):
+        qs = queryset.filter(
+            Q(code__iexact=value.upper()) |
+            Q(product_code__iexact=value.upper())
         )
         documents = []
         for p in qs:

@@ -7,7 +7,7 @@ class ProductsApi(APIClientBase):
         self.base_url += '/products'
 
     def search_products(self, query: str, meilisearch: bool = False) -> list:
-        q = 'search'
+        q = 'search_bot'
         if meilisearch:
             q = 'meilisearch'
         response = self._get(f'/products/?{q}={query}')

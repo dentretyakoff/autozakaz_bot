@@ -23,7 +23,7 @@ class CommandConstants:
     start = 'Начать работу с чат-ботом.'
 
 
-MAX_QUERY_LEN = 20
+MAX_QUERY_LEN = 30
 QUERY_PATTERN = rf'^[A-Za-z0-9]{{1,{MAX_QUERY_LEN}}}$'
 
 

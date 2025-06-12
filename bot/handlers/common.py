@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery
 from aiogram.methods import SendMessage
+from aiogram.fsm.context import FSMContext
 
 from api import api_backend
 from core.constants import MessagesConstants
@@ -21,8 +22,11 @@ async def start_handler(message: Message) -> SendMessage:
 
 
 @router.callback_query(F.data == 'back')
-async def back_to_main(callback_query: CallbackQuery) -> SendMessage:
+async def back_to_main(
+        callback_query: CallbackQuery,
+        state: FSMContext) -> SendMessage:
     """Вернуться в главное меню."""
+    await state.clear()
     await callback_query.message.edit_text(
         text=MessagesConstants.HELLO,
         reply_markup=main_menu_keyboard)

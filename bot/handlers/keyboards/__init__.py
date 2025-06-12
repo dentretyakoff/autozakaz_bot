@@ -1,2 +1,10 @@
-from .base import get_form_keyboard, back_to_main_keyboard
+from .base import (
+    get_form_keyboard,
+    back_to_main_keyboard,
+    back_to_main_button
+)
 from .common import main_menu_keyboard
+from .products import (
+    generate_products_buttons,
+    generate_product_buttons
+)

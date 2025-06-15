@@ -14,6 +14,11 @@ class CustomerBot(BaseModel):
         blank=True,
         max_length=255
     )
+    gdpr_accepted = models.BooleanField(
+        default=False,
+        verbose_name='Согласие на ПД',
+        help_text='Статус согласия на обработку перс. данных'
+    )
 
     class Meta:
         verbose_name = 'Клиент бота'

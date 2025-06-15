@@ -58,3 +58,25 @@ class Oferta(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class GDPR(BaseModel):
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Наименование'
+    )
+    text = models.TextField(
+        max_length=2500,
+        verbose_name='Текст',
+    )
+    is_actual = models.BooleanField(
+        default=False,
+        verbose_name='Актуальна'
+    )
+
+    class Meta:
+        verbose_name = 'Согласие на обработку ПД'
+        verbose_name_plural = 'Согласия на обработку ПД'
+
+    def __str__(self):
+        return self.name

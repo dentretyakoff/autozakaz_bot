@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from base.admin import TimeStampedAdmin
-from .models import Contact, Oferta
+from .models import Contact, Oferta, GDPR
 
 
 @admin.register(Contact)
@@ -24,6 +24,18 @@ class OfertaAdmin(TimeStampedAdmin):
         'id',
         'name',
         'oferta_file',
+        'is_actual'
+    )
+    list_display_links = ('name',)
+    readonly_fields = ('id',)
+
+
+@admin.register(GDPR)
+class GDPRAdmin(TimeStampedAdmin):
+    list_display = (
+        'id',
+        'name',
+        'text',
         'is_actual'
     )
     list_display_links = ('name',)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from about.models import Contact
+from about.models import Contact, GDPR
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -11,4 +11,15 @@ class ContactSerializer(serializers.ModelSerializer):
             'address',
             'phone',
             'email'
+        )
+
+
+class GDPRSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GDPR
+        fields = (
+            'id',
+            'name',
+            'text',
+            'is_actual'
         )

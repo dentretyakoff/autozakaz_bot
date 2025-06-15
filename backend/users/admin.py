@@ -6,7 +6,7 @@ from .models import CustomerBot
 
 @admin.register(CustomerBot)
 class CustomerBotAdmin(TimeStampedAdmin):
-    list_display = ('id', 'telegram_id', 'nickname')
+    list_display = ('id', 'telegram_id', 'nickname', 'gdpr_accepted')
     list_display_links = ('name',)
-    readonly_fields = ('id',)
+    readonly_fields = ('id', 'gdpr_accepted')
     search_fields = ('name',)

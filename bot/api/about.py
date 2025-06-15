@@ -13,3 +13,11 @@ class AboutApi(APIClientBase):
         if len(results) > 0:
             contacts = results[0]
         return contacts
+
+    def get_gdpr(self) -> dict:
+        response = self._get('/gdpr/')
+        results = response.json()['results']
+        gdpr = {}
+        if len(results) > 0:
+            gdpr = results[0]
+        return gdpr.get('text')

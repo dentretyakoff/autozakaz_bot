@@ -6,7 +6,11 @@ from aiogram.fsm.context import FSMContext
 
 from api import api_backend
 from core.constants import MessagesConstants
-from handlers.keyboards import main_menu_keyboard, back_to_main_keyboard
+from handlers.keyboards import (
+    main_menu_keyboard,
+    back_to_main_keyboard,
+    gdpr_confirm_keyboard
+)
 
 
 router = Router()
@@ -15,10 +19,26 @@ router = Router()
 @router.message(CommandStart())
 async def start_handler(message: Message) -> SendMessage:
     """Приветствие пользователя."""
-    api_backend.users.create_or_update(
+    user = api_backend.users.create_or_update(
         message.from_user.id, message.from_user.username)
+    if not user.get('gdpr_accepted'):
+        gdpr = api_backend.about.get_gdpr() or MessagesConstants.DEFAULT_GDPR
+        await message.answer(
+            text=gdpr,
+            reply_markup=gdpr_confirm_keyboard
+        )
+        return
     await message.answer(
         text=MessagesConstants.HELLO, reply_markup=main_menu_keyboard)
+
+
+@router.callback_query(F.data == 'gdpr_confirm')
+async def gdpr_confirm(callback_query: CallbackQuery) -> SendMessage:
+    """Сохраняет согласие на обработку персональных данных."""
+    api_backend.users.gdpr_confirm(callback_query.from_user.id)
+    await callback_query.message.edit_text(
+        text=MessagesConstants.HELLO,
+        reply_markup=main_menu_keyboard)
 
 
 @router.callback_query(F.data == 'back')

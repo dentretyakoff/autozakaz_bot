@@ -12,7 +12,7 @@ contacts_button = InlineKeyboardButton(
     callback_data='contacts'
 )
 gdpr_confirm_button = InlineKeyboardButton(
-    text='✅ Я согласен',
+    text='✅ Cогласен',
     callback_data='gdpr_confirm'
 )
 

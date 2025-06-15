@@ -1,6 +1,6 @@
-import os
 import logging
 from decimal import Decimal
+from pathlib import Path
 
 import wget
 import pandas as pd
@@ -19,6 +19,7 @@ from .constansts import (
     COLUMN_NAME,
     COLUMN_DESCRIPTION,
     COLUMN_PRICE,
+    COLUMN_PRICE_OLD,
     COLUMN_PERIOD_MIN,
 )
 
@@ -34,10 +35,24 @@ class CSVImport:
     def download_file(self):
         self.csv_file = wget.download(
             self.url, out=str(settings.TEMP_DIR), bar=None)
+        self._set_old_file_reference()
 
-    def prepare_csv(self) -> DataFrame:
-        self.csv_price.products.all().update(is_actual=False)
-        df = pd.read_csv(self.csv_file, sep=';', low_memory=False,
+    def _set_old_file_reference(self):
+        old_filename = Path(self.csv_file).stem + '_old.csv'
+        self.old_file_path = settings.TEMP_DIR / old_filename
+        self.csv_file_old = self.old_file_path if self.old_file_path.exists() else None  # noqa
+
+    def save_as_old_copy(self):
+        if not self.csv_file:
+            return
+
+        if self.csv_file_old and self.csv_file_old.exists():
+            self.csv_file_old.unlink()
+
+        Path(self.csv_file).rename(self.old_file_path)
+
+    def prepare_csv(self, file_path) -> DataFrame:
+        df = pd.read_csv(file_path, sep=';', low_memory=False,
                          header=0, encoding='cp1251')
         df.sort_values(COLUMNS_SORT, inplace=True)
         df.drop_duplicates(
@@ -58,11 +73,27 @@ class CSVImport:
 
         return df
 
+    def merge_df(self, df_new, df_old) -> DataFrame:
+        merged = df_new.merge(
+            df_old[[COLUMN_CODE, COLUMN_MANUFACTURER, COLUMN_PRICE]],
+            on=[COLUMN_CODE, COLUMN_MANUFACTURER],
+            how='left',
+            suffixes=('', '_old')
+        )
+
+        return merged[merged[COLUMN_PRICE] != merged[COLUMN_PRICE_OLD]]
+
     def import_csv(self) -> None:
         """Основной метод для скачивания и загрузки в БД прайс-листа."""
         try:
             self.download_file()
-            df = self.prepare_csv()
+            self.csv_price.products.all().update(is_actual=False)
+            df_new = self.prepare_csv(self.csv_file)
+            if self.csv_file_old:
+                df_old = self.prepare_csv(self.csv_file_old)
+                df = self.merge_df(df_old=df_old, df_new=df_new)
+            else:
+                df = df_new
             self.create_in_db(df)
             self.update_product_codes()
         except Exception as e:
@@ -74,8 +105,7 @@ class CSVImport:
             )
             raise
         finally:
-            if self.csv_file:
-                os.remove(self.csv_file)
+            self.save_as_old_copy()
 
     def drop_by_words(self, df: DataFrame) -> DataFrame:
         columns = list(CSVColumn.objects.filter(drop_by_words=True)

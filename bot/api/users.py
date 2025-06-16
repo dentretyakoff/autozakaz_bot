@@ -17,7 +17,7 @@ class UsersApi(APIClientBase):
                 data={'telegram_id': telegram_id, 'nickname': nickname},
                 url='/bot-customers/'
             )
-            return response.json().get('results')[0]
+            return response.json()
         except HTTPError as e:
             if e.response.status_code == 400:
                 response = self._patch(

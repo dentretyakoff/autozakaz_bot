@@ -6,13 +6,14 @@ from users.models import CustomerBot
 class CustomerBotCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerBot
-        fields = ('telegram_id', 'nickname')
+        fields = ('telegram_id', 'nickname', 'gdpr_accepted')
 
 
 class CustomerBotUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerBot
-        fields = ('nickname', 'gdpr_accepted')
+        fields = ('telegram_id', 'nickname', 'gdpr_accepted')
+        read_only_fields = ('telegram_id',)
 
 
 class CustomerBotRetrieveSerializer(serializers.ModelSerializer):

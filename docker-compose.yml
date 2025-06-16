@@ -75,6 +75,8 @@ services:
         condition: service_started
       redis:
         condition: service_healthy
+    volumes:
+      - celery_data:/app/temp
 
   celery-beat-backend:
     build:
@@ -137,3 +139,4 @@ volumes:
   static:
   media:
   meili_data:
+  celery_data:

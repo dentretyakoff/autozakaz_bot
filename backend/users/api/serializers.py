@@ -27,6 +27,12 @@ class CartItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(
         source='product.name', read_only=True
     )
+    code = serializers.CharField(
+        source='product.code', read_only=True
+    )
+    product_code = serializers.CharField(
+        source='product.product_code', read_only=True
+    )
     price = serializers.IntegerField(
         source='product.price', read_only=True
     )
@@ -42,6 +48,8 @@ class CartItemSerializer(serializers.ModelSerializer):
             'cart',
             'product',
             'product_name',
+            'code',
+            'product_code',
             'manufacturer',
             'quantity',
             'price',

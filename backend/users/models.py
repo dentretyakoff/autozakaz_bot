@@ -1,6 +1,8 @@
 from django.db import models
 
 from base.models import BaseModel
+from base.enums import PaymentMethod
+from products.models import Product
 
 
 class CustomerBot(BaseModel):
@@ -26,3 +28,66 @@ class CustomerBot(BaseModel):
 
     def __str__(self):
         return f'{self.telegram_id}'
+
+
+class Cart(BaseModel):
+    customer = models.OneToOneField(
+        CustomerBot,
+        verbose_name='Клиент',
+        on_delete=models.CASCADE,
+        related_name='cart'
+    )
+    payment_method = models.CharField(
+        'Способ оплаты',
+        choices=PaymentMethod,
+        default=PaymentMethod.ROBOKASSA,
+        max_length=10
+    )
+    comment = models.TextField(
+        'Комментарий для заказа',
+        blank=True,
+        default=''
+    )
+
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
+
+    def __str__(self):
+        return f'{self.customer}'
+
+    @property
+    def payment_method_display(self):
+        return dict(PaymentMethod.choices).get(self.payment_method)
+
+    @property
+    def total_price(self) -> int:
+        return sum(
+            (item.product.price * item.quantity for item in self.items.all())
+        )
+
+
+class CartItem(BaseModel):
+    cart = models.ForeignKey(
+        Cart,
+        verbose_name='Клиент',
+        related_name='items',
+        on_delete=models.CASCADE
+    )
+    product = models.ForeignKey(
+        Product,
+        verbose_name='Товар',
+        on_delete=models.PROTECT,
+        related_name='cartitems'
+    )
+    quantity = models.PositiveSmallIntegerField(
+        'Количество',
+        default=1
+    )
+
+    class Meta:
+        verbose_name = 'Товар корзины'
+        verbose_name_plural = 'Товары корзин'
+
+    def __str__(self):
+        return f'{self.product}'

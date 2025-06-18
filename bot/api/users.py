@@ -8,7 +8,7 @@ class UsersApi(APIClientBase):
         super().__init__()
         self.base_url += '/users'
 
-    def get_user(self, telegram_id: int):
+    def get_user(self, telegram_id: int) -> dict:
         return self._get(f'/bot-customers/{telegram_id}/')
 
     def create_or_update(self, telegram_id: int, nickname: str) -> list:
@@ -28,8 +28,17 @@ class UsersApi(APIClientBase):
                 raise
             return response.json()
 
-    def gdpr_confirm(self, telegram_id: int):
+    def gdpr_confirm(self, telegram_id: int) -> dict:
         return self._patch(
             data={'gdpr_accepted': True},
             url=f'/bot-customers/{telegram_id}/'
         )
+
+    def get_cart(self, telegram_id: int) -> dict:
+        return self._get(f'/cart/{telegram_id}/').json()
+
+    def add_product(self, data: dict):
+        self._post(data=data, url='/cart-items/')
+
+    def delete_cartitem(self, cartitem_id: int):
+        self._delete(f'/cart-items/{cartitem_id}/')

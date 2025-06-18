@@ -43,3 +43,6 @@ class InputValidationConstants:
 
 
 MAX_LEN_DESCRIPTION = 500
+
+MIN_QUANTITY = 1
+MAX_QUANTITY = 32767

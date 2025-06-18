@@ -15,11 +15,16 @@ gdpr_confirm_button = InlineKeyboardButton(
     text='✅ Cогласен',
     callback_data='gdpr_confirm'
 )
+cart_button = InlineKeyboardButton(
+    text='🛒 Корзина',
+    callback_data='cart'
+)
 
 
 main_menu_keyboard = get_form_keyboard(
     start_search_products_button,
     contacts_button,
+    cart_button
 )
 gdpr_confirm_keyboard = get_form_keyboard(
     gdpr_confirm_button

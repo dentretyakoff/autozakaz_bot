@@ -19,9 +19,29 @@ def generate_products_buttons(products: list):
     return get_form_keyboard(*buttons)
 
 
-def generate_product_buttons():
+def generate_product_buttons(product: dict):
     """Генерирует кнопки доавления товара в корзину."""
     buttons = []
+    cartitem_id = product.get('cartitem_id')
+    product_id = product.get('id')
+    if cartitem_id:
+        buttons.append(
+            InlineKeyboardButton(
+                text=f'Удалить из корзины ({product.get("quantity")})',
+                callback_data=f'delete_cartitem_id_{cartitem_id}_{product_id}'
+            )
+        )
+        buttons.append(
+            InlineKeyboardButton(
+                text=f'Перейти в корзину ({product.get("total_price")} ₽)',
+                callback_data='cart'
+            )
+        )
+    else:
+        buttons.append(
+            InlineKeyboardButton(
+                text='Добавить в корзину',
+                callback_data=f'add_product_id_{product_id}'))
     buttons.append(
         InlineKeyboardButton(
             text='⬅️ Назад к списку товаров',

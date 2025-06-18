@@ -56,3 +56,25 @@ async def safe_delete_message(message: Message) -> None:
             logger.info('Не могу удалить старое сообщение.')
         else:
             logger.warning(f'Ошибка при удалении сообщения: {e}')
+
+
+def product_list(items: list) -> tuple[str, int]:
+    product_list = ''
+    for i, product in enumerate(items, 1):
+        product_list += (
+            f'🏷 {i}. <b>{product.get("code")}</b> '
+            f'{product.get("product_name")} '
+            f'(<b>{product.get("manufacturer")}</b>) '
+            f'{product.get("quantity")} шт. - '
+            f'<b>{product.get("price")} ₽</b>\n')
+
+    return product_list
+
+
+def get_cart_detail(cart: dict) -> str:
+    """Детали корзины."""
+    cart_detail = 'Корзина:\n\n'
+    products = product_list(cart.get('items'))
+    cart_detail += products
+    cart_detail += (f'\n💰 Итого: <b>{cart.get("total_price")} ₽</b>\n')
+    return cart_detail

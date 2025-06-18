@@ -5,6 +5,7 @@ from handlers.common import router as common_router
 from handlers.errors import router as errors_router
 from handlers.contacts import router as contacts_router
 from handlers.products import router as products_router
+from handlers.cart import router as cart_router
 from .constants import CommandConstants
 
 
@@ -28,3 +29,4 @@ def setup_routers(dispatcher: Dispatcher) -> None:
     dispatcher.include_router(errors_router)
     dispatcher.include_router(contacts_router)
     dispatcher.include_router(products_router)
+    dispatcher.include_router(cart_router)

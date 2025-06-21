@@ -7,14 +7,14 @@ from aiogram.methods import SendMessage
 
 from api import api_backend
 from core.constants import MessagesConstants
-from core.validators import validate_search_query
+from core.validators import validate_search_query, validate_quantity_is_number
 from handlers.keyboards import (
     back_to_main_keyboard,
     generate_products_buttons,
     generate_product_buttons,
     main_menu_keyboard
 )
-from handlers.states import Search
+from handlers.states import Search, ProductForm
 from .utils import (
     delete_previous_message,
     safe_delete_message,
@@ -71,6 +71,7 @@ async def product(callback_query: CallbackQuery) -> SendMessage:
     product_id = int(callback_query.data.split('_')[-1])
     await answer_with_detail_product(
         product_id=product_id,
+        telegram_id=callback_query.from_user.id,
         message=callback_query.message
     )
 
@@ -91,15 +92,64 @@ async def back_to_results(callback_query: CallbackQuery, state: FSMContext):
             reply_markup=generate_products_buttons(products))
 
 
+@router.callback_query(F.data.startswith('delete_cartitem_id_'))
+async def delete_cartitem_from_cart(
+        callback_query: CallbackQuery) -> SendMessage:
+    """Удалаяет товар из корзины."""
+    parts = callback_query.data.split('_')
+    cartitem_id = int(parts[3])
+    product_id = int(parts[4])
+    api_backend.users.delete_cartitem(cartitem_id)
+    await answer_with_detail_product(
+        product_id=product_id,
+        telegram_id=callback_query.from_user.id,
+        message=callback_query.message
+    )
+
+
+@router.callback_query(F.data.startswith('add_product_id_'))
+async def add_cartitem_to_cart(
+        callback_query: CallbackQuery,
+        state: FSMContext) -> SendMessage:
+    """Запоминает выбранный товар."""
+    product_id = int(callback_query.data.split('_')[-1])
+    await state.update_data(product=product_id)
+    await safe_delete_message(callback_query.message)
+    sent_message = await callback_query.message.answer(
+        'Введите количество товара:')
+    await state.update_data(message_id=sent_message.message_id)
+    await state.set_state(ProductForm.quantity)
+
+
+@router.message(ProductForm.quantity)
+async def input_quantity(
+        message: Message,
+        state: FSMContext) -> SendMessage:
+    """Запоминает количество, добавляет товар в корзину."""
+    quantity = validate_quantity_is_number(message.text.strip())
+    await state.update_data(quantity=quantity)
+    data = await state.get_data()
+    data['telegram_id'] = message.from_user.id
+    await delete_previous_message(data.pop('message_id'), message)
+    api_backend.users.add_product(data)
+    await state.clear()
+    await answer_with_detail_product(
+        product_id=data.get('product'),
+        telegram_id=message.from_user.id,
+        message=message
+    )
+
+
 async def answer_with_detail_product(
         product_id: int,
+        telegram_id: int,
         message: Message | CallbackQuery,
 ) -> None:
     """Ответ с деталями о товаре."""
-    product = api_backend.products.get_product(product_id)
+    product = api_backend.products.get_product(product_id, telegram_id)
     text = make_product_text(product)
     await safe_delete_message(message)
     await message.answer(
         text=text,
-        reply_markup=generate_product_buttons()
+        reply_markup=generate_product_buttons(product)
     )

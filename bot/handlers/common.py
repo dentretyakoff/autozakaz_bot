@@ -28,6 +28,7 @@ async def start_handler(message: Message) -> SendMessage:
             reply_markup=gdpr_confirm_keyboard
         )
         return
+    api_backend.users.create_cart(message.from_user.id)
     await message.answer(
         text=MessagesConstants.HELLO, reply_markup=main_menu_keyboard)
 

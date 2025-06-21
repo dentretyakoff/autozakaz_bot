@@ -1,0 +1,14 @@
+<html>
+  <body onload="document.forms[0].submit();">
+  <body>
+    <form action="{{ robokassa_url }}" method="POST">
+      {% for key, value in params.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <noscript>
+        <input type="submit" value="Нажмите для перехода к оплате">
+      </noscript>
+    </form>
+    <p>Перенаправляем на Робокассу...</p>
+  </body>
+</html>

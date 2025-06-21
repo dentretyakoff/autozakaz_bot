@@ -14,6 +14,6 @@ class ProductsApi(APIClientBase):
         results = response.json()['results']
         return results
 
-    def get_product(self, pk: int) -> dict:
-        response = self._get(f'/products/{pk}')
+    def get_product(self, pk: int, telegram_id: int) -> dict:
+        response = self._get(f'/products/{pk}?telegram_id={telegram_id}')
         return response.json()

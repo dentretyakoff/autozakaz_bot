@@ -34,3 +34,6 @@ class APIClientBase:
         )
         response.raise_for_status()
         return response
+
+    def _delete(self, url: str) -> None:
+        requests.delete(url=self.base_url + url, headers=self.headers)

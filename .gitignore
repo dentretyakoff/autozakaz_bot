@@ -2,6 +2,7 @@
 backend/media_files/
 temp/
 static/
+*.db
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

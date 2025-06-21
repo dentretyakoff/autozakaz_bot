@@ -12,6 +12,9 @@ TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 BACKEND_URL = os.getenv('BACKEND_API_URL')
 API_TOKEN = os.getenv('BACKEND_API_TOKEN')
+FRONTEND_URL = os.getenv('FRONTEND_URL')
+GROUP_ID = os.getenv('GROUP_ID')
+REDIS_HOST = os.getenv('REDIS_HOST')
 
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'Project-Name')
 

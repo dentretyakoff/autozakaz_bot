@@ -54,3 +54,6 @@ class UsersApi(APIClientBase):
             data={'comment': comment},
             url=f'/cart/{telegram_id}/'
         )
+
+    def clear_cart(self, telegram_id: int) -> None:
+        return self._delete(f'/cart/{telegram_id}/clear/')

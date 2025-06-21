@@ -20,3 +20,13 @@ async def cart(callback_query: CallbackQuery) -> SendMessage:
     text = get_cart_detail(cart)
     await callback_query.message.edit_text(
         text=text, reply_markup=generate_cart_buttons(cart))
+
+
+@router.callback_query(F.data == 'clear_cart')
+async def clear_cart(callback_query: CallbackQuery) -> SendMessage:
+    """Очищает корзину."""
+    api_backend.users.clear_cart(callback_query.from_user.id)
+    cart = api_backend.users.get_cart(callback_query.from_user.id)
+    text = get_cart_detail(cart)
+    await callback_query.message.edit_text(
+        text=text, reply_markup=generate_cart_buttons(cart))

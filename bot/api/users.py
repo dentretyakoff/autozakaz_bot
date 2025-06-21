@@ -37,6 +37,9 @@ class UsersApi(APIClientBase):
     def get_cart(self, telegram_id: int) -> dict:
         return self._get(f'/cart/{telegram_id}/').json()
 
+    def create_cart(self, telegram_id: int) -> dict:
+        return self._post({'telegram_id': telegram_id}, '/cart/')
+
     def add_product(self, data: dict):
         self._post(data=data, url='/cart-items/')
 

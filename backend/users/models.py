@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 from base.models import BaseModel
 from base.enums import PaymentMethod
@@ -20,6 +21,16 @@ class CustomerBot(BaseModel):
         default=False,
         verbose_name='Согласие на ПД',
         help_text='Статус согласия на обработку перс. данных'
+    )
+    phone = models.CharField(
+        validators=[
+            RegexValidator(
+                regex=r'^(?:\+7|8)\d{10}$',
+                message='Введите номер в формате +71234567890 или 89123456789'
+            )
+        ],
+        max_length=12,
+        blank=True
     )
 
     class Meta:

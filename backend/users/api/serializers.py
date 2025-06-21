@@ -12,14 +12,14 @@ class CustomerBotCreateSerializer(serializers.ModelSerializer):
 class CustomerBotUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerBot
-        fields = ('telegram_id', 'nickname', 'gdpr_accepted')
+        fields = ('telegram_id', 'nickname', 'gdpr_accepted', 'phone')
         read_only_fields = ('telegram_id',)
 
 
 class CustomerBotRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerBot
-        fields = ('id', 'telegram_id', 'nickname', 'gdpr_accepted')
+        fields = ('id', 'telegram_id', 'nickname', 'gdpr_accepted', 'phone')
 
 
 class CartItemSerializer(serializers.ModelSerializer):

@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'import_goods.apps.ImportGoodsConfig',
     'products.apps.ProductsConfig',
     'about.apps.AboutConfig',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -176,3 +177,11 @@ MEILISEARCH = {
     'DEBUG': DEBUG,
     'DEFAULT_BATCH_SIZE': 1000,
 }
+
+ORDER_MAX_LIFE_TIME = int(os.getenv('ORDER_MAX_LIFE_TIME', 1200))
+# Robokassa
+MERCHANT_LOGIN = os.getenv('MERCHANT_LOGIN')
+MERCHANT_PASSWORD_1 = os.getenv('MERCHANT_PASSWORD_1')
+MERCHANT_PASSWORD_2 = os.getenv('MERCHANT_PASSWORD_2')
+IS_TEST = int(os.getenv('IS_TEST', 1))
+ROBOKASSA_URL = os.getenv('ROBOKASSA_URL', '')

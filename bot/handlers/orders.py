@@ -8,7 +8,9 @@ from handlers.keyboards import (
     generate_orders_buttons,
     back_to_orders_keyboard
 )
+from core.constants import MessagesConstants
 from handlers.utils import get_order_detail
+from celery_app import start_payment_check
 
 router = Router()
 
@@ -40,7 +42,7 @@ async def order_detail(callback_query: CallbackQuery) -> SendMessage:
 async def create_order(callback_query: CallbackQuery) -> SendMessage:
     """Создает заказ."""
     order = api_backend.orders.create_order(callback_query.from_user.id)
-    # start_payment_check(order.get('id'), callback_query.from_user.id)
+    start_payment_check(order.get('id'), callback_query.from_user.id)
     await callback_query.message.edit_text(
-        text='Спасибо за заказ.',
+        text=MessagesConstants.PAY_ORDER,
         reply_markup=generate_payment_link_buttons(order.get('payment_url')))

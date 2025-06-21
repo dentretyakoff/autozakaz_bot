@@ -153,9 +153,6 @@ CELERY_BEAT_SCHEDULE = {
     'check-scheduled-tasks': {
         'task': 'import_goods.tasks.check_scheduled_tasks',
         'schedule': 60.0,
-        'options': {
-            'queue': 'backend',
-        },
     },
 }
 

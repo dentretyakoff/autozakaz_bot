@@ -3,7 +3,7 @@ import logging
 from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
-from core.constants import MessagesConstants, MAX_LEN_DESCRIPTION
+from core.constants import MessagesConstants, MAX_LEN_DESCRIPTION, OrderStatus
 
 logger = logging.getLogger(__name__)
 
@@ -94,10 +94,12 @@ def get_order_detail(order: dict) -> str:
     order_detail = 'Детали заказа:\n'
     products = product_list(order.get('items'))
     customer = order.get('customer')
+    status = order.get('status')
     order_detail += (
         f'{products}'
         f'\n💰 Итого: <b>{order.get('total_price')} ₽</b>\n\n'
         f'Комментарий: {order.get("comment")}\n\n'
-        f'Телефон: {customer.get("phone")}'
+        f'Телефон: {customer.get("phone")}\n\n'
+        f'Статус: {OrderStatus.get_icon(status)}\n\n'
     )
     return order_detail

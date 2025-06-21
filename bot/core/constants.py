@@ -27,12 +27,39 @@ class MessagesConstants:
         'Нажмите «Cогласен», чтобы продолжить.'
     )
     REQUEST_COMMENT = 'Укажи адрес доставки и комментарий к заказу'
+    PAY_ORDER = (
+        '👍 Заказ оформлен.\n'
+        'Для перехода к оплате нажмите кнопку "Оплатить".\n'
+        'Спасибо.'
+    )
+    PAYMENT_NOT_RECEIVED = '❌ Оплата не поступила, заказ отменён.'
+    PAYMENT_OK = '✅ Оплата подтверждена!'
 
 
 class CommandConstants:
     start = 'Начать работу с чат-ботом.'
 
 
+class OrderStatus:
+    PAID = 'paid'
+    AWAITING = 'awaiting'
+    CANCELLED = 'cancelled'
+
+    ICONS = {
+        PAID: '✅',
+        AWAITING: '⏳',
+        CANCELLED: '❌',
+    }
+
+    @classmethod
+    def get_icon(cls, status: str) -> str:
+        return cls.ICONS.get(status, '❔')
+
+
+MAX_LEN_DESCRIPTION = 500
+MIN_QUANTITY = 1
+MAX_QUANTITY = 32767
+PHONE_PATTERN = r'^(?:\+7|8)\d{10}$'
 MAX_QUERY_LEN = 30
 QUERY_PATTERN = rf'^[A-Za-z0-9]{{1,{MAX_QUERY_LEN}}}$'
 
@@ -49,11 +76,3 @@ class InputValidationConstants:
         'Вы отправили файл вместо текста, '
         'пожалуйста введите текстовое сообщение.'
     )
-
-
-MAX_LEN_DESCRIPTION = 500
-
-MIN_QUANTITY = 1
-MAX_QUANTITY = 32767
-
-PHONE_PATTERN = r'^(?:\+7|8)\d{10}$'

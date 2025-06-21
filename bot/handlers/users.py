@@ -55,7 +55,7 @@ async def exist_phone(
     """При воборе текущего номер телефона переводит на ввод комментария."""
     await state.clear()
     sent_message = await callback_query.message.edit_text(
-        'Введи текст комментария:')
+        MessagesConstants.REQUEST_COMMENT)
     await state.update_data(comment_message_id=sent_message.message_id)
     await state.set_state(CartForm.comment)
 

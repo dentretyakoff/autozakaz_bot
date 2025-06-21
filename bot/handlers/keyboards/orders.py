@@ -3,6 +3,7 @@ from datetime import datetime
 from aiogram.types import InlineKeyboardButton
 
 from core.settings import FRONTEND_URL
+from core.constants import OrderStatus
 from handlers.keyboards import (
     get_form_keyboard,
     back_to_main_button,
@@ -24,11 +25,13 @@ def generate_orders_buttons(orders: dict):
     """Генерирует кнопки истории заказов."""
     buttons = []
     for order in orders:
+        status = order.get('status')
+        icon = OrderStatus.get_icon(status)
         dt = datetime.fromisoformat(
             order.get('created_at')).strftime("%d.%m.%Y %H:%M")
         buttons.append(
             InlineKeyboardButton(
-                text=(f'{dt} - {order.get("total_price")} ₽'),
+                text=(f'{icon} {dt} - {order.get("total_price")} ₽'),
                 callback_data=f'order_id_{order.get("id")}')
         )
     buttons.append(back_to_main_button)

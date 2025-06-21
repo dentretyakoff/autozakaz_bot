@@ -17,3 +17,7 @@ class OrdersApi(APIClientBase):
     def create_order(self, telegram_id: int) -> dict:
         response = self._post({'telegram_id': telegram_id}, '/orders/')
         return response.json()
+
+    def cancel_order(self, order_id: int) -> dict:
+        response = self._patch({}, f'/orders/{order_id}/cancel/')
+        return response.json()

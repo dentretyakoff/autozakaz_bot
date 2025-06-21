@@ -130,8 +130,25 @@ services:
       - .env
     environment:
       - BACKEND_API_URL=http://backend:8000
+      - REDIS_HOST=redis
     depends_on:
       - backend
+
+  celery-worker-bot:
+    build:
+      context: ./bot
+    restart: always
+    command: celery -A celery_app worker -Q bot --loglevel=info
+    env_file:
+      - .env
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+      - REDIS_HOST=redis
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
 
 volumes:
   pg_data:

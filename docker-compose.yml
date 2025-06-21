@@ -62,7 +62,7 @@ services:
     build:
       context: ./backend
     restart: always
-    command: celery -A core worker --loglevel=info
+    command: celery -A core worker -Q backend --loglevel=info
     env_file:
       - .env
     environment:

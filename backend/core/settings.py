@@ -141,6 +141,7 @@ CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_DEFAULT_QUEUE = 'backend'
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     'visibility_timeout': 86400,
 }
@@ -152,6 +153,9 @@ CELERY_BEAT_SCHEDULE = {
     'check-scheduled-tasks': {
         'task': 'import_goods.tasks.check_scheduled_tasks',
         'schedule': 60.0,
+        'options': {
+            'queue': 'backend',
+        },
     },
 }
 

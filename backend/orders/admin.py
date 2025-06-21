@@ -52,6 +52,9 @@ class OrderAdmin(TimeStampedAdmin):
     def has_add_permission(self, request):
         return False
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     def total_price_display(self, obj):
         return f'{obj.total_price} ₽'
     total_price_display.short_description = 'Общая сумма'

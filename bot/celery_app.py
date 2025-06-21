@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 celery_app = Celery(
     'celery_app',
-    broker=settings.CELERY_BROKER,
-    backend=settings.CELERY_BROKER
+    broker=f'redis://{settings.REDIS_HOST}:6379/0',
+    backend=f'redis://{settings.REDIS_HOST}:6379/0'
 )
 celery_app.conf.broker_connection_retry_on_startup = True
 celery_app.conf.task_default_queue = 'bot'

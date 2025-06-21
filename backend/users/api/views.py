@@ -1,4 +1,6 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from users.models import CustomerBot, Cart, CartItem
 from .serializers import (
@@ -43,6 +45,13 @@ class CartViewSet(
         return (super().get_queryset()
                 .select_related('customer')
                 .prefetch_related('items'))
+
+    @action(detail=True, methods=['delete'], url_path='clear')
+    def clear_cart(self, request, **kwargs):
+        """Очистить корзину."""
+        cart = self.get_object()
+        cart.items.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CartItemViewSet(

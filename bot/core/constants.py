@@ -26,6 +26,7 @@ class MessagesConstants:
         'не передаются третьим лицам.\n'
         'Нажмите «Cогласен», чтобы продолжить.'
     )
+    REQUEST_COMMENT = 'Укажи адрес доставки и комментарий к заказу'
 
 
 class CommandConstants:
@@ -40,9 +41,19 @@ class InputValidationConstants:
     BAD_QUERY = ('Некорректный запрос, допускаются цифры от 0 до 9 и букы '
                  f'латинского алфавита. Максимальная длинна {MAX_QUERY_LEN} '
                  'символов.')
+    INCORRECT_PHONE_NUMBER = (
+        'Некорректный номер телефона.\n'
+        'Пожалуйста введите в формате +71234567890 или 89123456789.'
+    )
+    MESSAGE_IS_NOT_TEXT = (
+        'Вы отправили файл вместо текста, '
+        'пожалуйста введите текстовое сообщение.'
+    )
 
 
 MAX_LEN_DESCRIPTION = 500
 
 MIN_QUANTITY = 1
 MAX_QUANTITY = 32767
+
+PHONE_PATTERN = r'^(?:\+7|8)\d{10}$'

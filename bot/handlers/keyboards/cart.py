@@ -15,5 +15,5 @@ def generate_cart_buttons(cart: dict):
 
 making_order_button = InlineKeyboardButton(
     text='✍️ К оформлению заказа',
-    callback_data='back'  # TODO поменять на create_order
+    callback_data='phone'
 )

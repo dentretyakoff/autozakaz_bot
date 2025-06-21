@@ -42,3 +42,15 @@ class UsersApi(APIClientBase):
 
     def delete_cartitem(self, cartitem_id: int):
         self._delete(f'/cart-items/{cartitem_id}/')
+
+    def update_phone(self, telegram_id: int, phone: str) -> dict:
+        return self._patch(
+            data={'phone': phone},
+            url=f'/bot-customers/{telegram_id}/'
+        )
+
+    def update_comment(self, telegram_id: int, comment: str) -> dict:
+        return self._patch(
+            data={'comment': comment},
+            url=f'/cart/{telegram_id}/'
+        )

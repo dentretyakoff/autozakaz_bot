@@ -71,10 +71,33 @@ def product_list(items: list) -> tuple[str, int]:
     return product_list
 
 
-def get_cart_detail(cart: dict) -> str:
+def get_cart_detail(cart: dict, pre_order: bool = False) -> str:
     """Детали корзины."""
     cart_detail = 'Корзина:\n\n'
+    if pre_order:
+        cart_detail = 'Детали заказа:\n\n'
     products = product_list(cart.get('items'))
     cart_detail += products
-    cart_detail += (f'\n💰 Итого: <b>{cart.get("total_price")} ₽</b>\n')
+    cart_detail += (
+        f'\n💰 Итого: <b>{cart.get("total_price")} ₽</b>\n\n'
+    )
+    if pre_order:
+        cart_detail += (
+            f'Комментарий: {cart.get("comment")}\n\n'
+            f'Телефон: {cart.get("customer").get("phone")}\n'
+        )
     return cart_detail
+
+
+def get_order_detail(order: dict) -> str:
+    """Детали заказа."""
+    order_detail = 'Детали заказа:\n'
+    products = product_list(order.get('items'))
+    customer = order.get('customer')
+    order_detail += (
+        f'{products}'
+        f'\n💰 Итого: <b>{order.get('total_price')} ₽</b>\n\n'
+        f'Комментарий: {order.get("comment")}\n\n'
+        f'Телефон: {customer.get("phone")}'
+    )
+    return order_detail

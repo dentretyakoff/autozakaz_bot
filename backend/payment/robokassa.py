@@ -1,11 +1,13 @@
 import hashlib
 import json
-from decimal import Decimal, ROUND_DOWN
+from decimal import Decimal
 from datetime import datetime
 from urllib import parse
 from urllib.parse import urlparse
 
 from django.conf import settings
+
+from orders.models import Order
 
 
 def calculate_signature(*args) -> str:
@@ -112,21 +114,23 @@ def check_success_payment(merchant_password_1: str, request: str) -> str:
     return "bad sign"
 
 
-def generate_payment_params(order):
+def generate_payment_params(order: Order):
     """Генерирует параметры для формы с POST запросом."""
     receipt = build_receipt(order)
+    out_sum = f'{order.total_price:.2f}'
+    inv_id = str(order.id)
     params = {
         'MerchantLogin': settings.MERCHANT_LOGIN,
-        'OutSum': order.total_price,
-        'InvId': str(order.id),
+        'OutSum': out_sum,
+        'InvId': inv_id,
         'IsTest': settings.IS_TEST,
         'ExpirationDate': order.expiration_date,
         'Receipt': receipt
     }
     params['SignatureValue'] = calculate_signature(
         settings.MERCHANT_LOGIN,
-        order.total_price,
-        order.id,
+        out_sum,
+        inv_id,
         receipt,
         settings.MERCHANT_PASSWORD_1
     )
@@ -139,14 +143,7 @@ def build_receipt(order):
         items.append({
             'name': item.product.name,
             'quantity': item.quantity,
-            'sum': to_robokassa_sum(item.price * item.quantity),
+            'sum': f'{(item.price * item.quantity):.2f}',
             'tax': 'none'
         })
-    receipt = {'items': items}
-    receipt_json = json.dumps(receipt, ensure_ascii=False)
-    receipt_encoded = parse.quote(receipt_json)
-    return receipt_encoded
-
-
-def to_robokassa_sum(value):
-    return float(Decimal(value).quantize(Decimal('0.01'), rounding=ROUND_DOWN))
+    return json.dumps({'items': items}, ensure_ascii=False)

@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets, status
@@ -12,6 +14,8 @@ from .serializers import (
     OrderCreateSerializer,
     OrderRetrieveSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class OrderViewSet(mixins.CreateModelMixin,
@@ -57,9 +61,15 @@ class OrderViewSet(mixins.CreateModelMixin,
             url_path='success-payment')
     def success_payment(self, request):
         query_string = request.get_full_path()
-        sign = robokassa.result_payment(
-            merchant_password_2=settings.MERCHANT_PASSWORD_2,
-            request=query_string)
+        try:
+            sign = robokassa.result_payment(
+                merchant_password_2=settings.MERCHANT_PASSWORD_2,
+                request=query_string)
+        except Exception as e:
+            message = 'Ошибка проверки подписи'
+            logger.error(f'{message}: {e}')
+            return Response(
+                {'detail': message}, status=status.HTTP_400_BAD_REQUEST)
         if 'OK' in sign:
             order_id = request.query_params.get('InvId')
             order = get_object_or_404(Order, pk=order_id)

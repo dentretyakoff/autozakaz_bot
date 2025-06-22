@@ -11,6 +11,12 @@ from users.models import CustomerBot
 class OrderItemRetrieveSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(
         source='product.name', read_only=True)
+    code = serializers.CharField(
+        source='product.code', read_only=True
+    )
+    manufacturer = serializers.CharField(
+        source='product.manufacturer.name', read_only=True
+    )
 
     class Meta:
         model = OrderItem
@@ -19,7 +25,9 @@ class OrderItemRetrieveSerializer(serializers.ModelSerializer):
             'product',
             'product_name',
             'quantity',
-            'price'
+            'price',
+            'code',
+            'manufacturer',
         )
 
 

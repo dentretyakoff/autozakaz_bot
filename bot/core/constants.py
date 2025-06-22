@@ -50,10 +50,19 @@ class OrderStatus:
         AWAITING: '⏳',
         CANCELLED: '❌',
     }
+    ICONS_WITH_TEXT = {
+        PAID: '✅ Оплачен',
+        AWAITING: '⏳ Ожидает оплаты',
+        CANCELLED: '❌ Отменен',
+    }
 
     @classmethod
     def get_icon(cls, status: str) -> str:
         return cls.ICONS.get(status, '❔')
+
+    @classmethod
+    def get_icon_with_text(cls, status: str) -> str:
+        return cls.ICONS_WITH_TEXT.get(status, '❔')
 
 
 MAX_LEN_DESCRIPTION = 500

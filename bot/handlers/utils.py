@@ -100,6 +100,6 @@ def get_order_detail(order: dict) -> str:
         f'\n💰 Итого: <b>{order.get('total_price')} ₽</b>\n\n'
         f'Комментарий: {order.get("comment")}\n\n'
         f'Телефон: {customer.get("phone")}\n\n'
-        f'Статус: {OrderStatus.get_icon(status)}\n\n'
+        f'Статус: {OrderStatus.get_icon_with_text(status)}\n\n'
     )
     return order_detail

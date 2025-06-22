@@ -24,7 +24,7 @@ celery_app.conf.task_default_queue = 'bot'
 
 
 @celery_app.task
-def check_payment(order_id, user_id, start_time, attempt=1):
+def check_payment(order_id, user_id, message_id, start_time, attempt=1):
     """
     Проверяем оплату каждые settings.INTERVAL_CHECK_PAYMENT сек.
     Максимум settings.MAX_CHECK_PAYMENT_TIME минут.
@@ -40,16 +40,18 @@ def check_payment(order_id, user_id, start_time, attempt=1):
 
     if elapsed_time > settings.MAX_CHECK_PAYMENT_TIME:
         api_backend.orders.cancel_order(order_id)
-        loop.run_until_complete(bot.send_message(
+        loop.run_until_complete(bot.edit_message_text(
             chat_id=user_id,
+            message_id=message_id,
             text=MessagesConstants.PAYMENT_NOT_RECEIVED))
         logger.info(f'Отменен заказ: {order_id}, пользователь {user_id}')
         return  # Прекращаем проверки
 
     if order.get('status') == OrderStatus.PAID:
         text = get_order_detail(order)
-        loop.run_until_complete(bot.send_message(
+        loop.run_until_complete(bot.edit_message_text(
             chat_id=user_id,
+            message_id=message_id,
             text=f'{MessagesConstants.PAYMENT_OK}'))
         loop.run_until_complete(bot.send_message(
             chat_id=settings.GROUP_ID,
@@ -57,16 +59,16 @@ def check_payment(order_id, user_id, start_time, attempt=1):
     else:
         attempt += 1
         check_payment.apply_async(
-            (order_id, user_id, start_time, attempt),
+            (order_id, user_id, message_id, start_time, attempt),
             countdown=settings.INTERVAL_CHECK_PAYMENT)
 
 
-def start_payment_check(order_id, user_id):
+def start_payment_check(order_id, user_id, message_id):
     """Запуск первой задачи с отметкой времени старта."""
     start_time = time.time()
     logger.info(f'Старт проверки оплаты - заказ: {order_id}, '
                 f'пользователь - {user_id}')
     check_payment.apply_async(
-        (order_id, user_id, start_time),
+        (order_id, user_id, message_id, start_time),
         countdown=settings.INTERVAL_CHECK_PAYMENT
     )

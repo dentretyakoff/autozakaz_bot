@@ -42,7 +42,11 @@ async def order_detail(callback_query: CallbackQuery) -> SendMessage:
 async def create_order(callback_query: CallbackQuery) -> SendMessage:
     """Создает заказ."""
     order = api_backend.orders.create_order(callback_query.from_user.id)
-    start_payment_check(order.get('id'), callback_query.from_user.id)
-    await callback_query.message.edit_text(
+    sent_message = await callback_query.message.edit_text(
         text=MessagesConstants.PAY_ORDER,
         reply_markup=generate_payment_link_buttons(order.get('payment_url')))
+    start_payment_check(
+        order_id=order.get('id'),
+        user_id=callback_query.from_user.id,
+        message_id=sent_message.message_id
+    )

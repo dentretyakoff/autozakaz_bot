@@ -3,7 +3,7 @@ import logging
 from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
-from core.constants import MessagesConstants, MAX_LEN_DESCRIPTION
+from core.constants import MessagesConstants, MAX_LEN_DESCRIPTION, OrderStatus
 
 logger = logging.getLogger(__name__)
 
@@ -56,3 +56,50 @@ async def safe_delete_message(message: Message) -> None:
             logger.info('Не могу удалить старое сообщение.')
         else:
             logger.warning(f'Ошибка при удалении сообщения: {e}')
+
+
+def product_list(items: list) -> tuple[str, int]:
+    product_list = ''
+    for i, product in enumerate(items, 1):
+        product_list += (
+            f'🏷 {i}. <b>{product.get("code")}</b> '
+            f'{product.get("product_name")} '
+            f'(<b>{product.get("manufacturer")}</b>) '
+            f'{product.get("quantity")} шт. - '
+            f'<b>{product.get("price")} ₽</b>\n')
+
+    return product_list
+
+
+def get_cart_detail(cart: dict, pre_order: bool = False) -> str:
+    """Детали корзины."""
+    cart_detail = 'Корзина:\n\n'
+    if pre_order:
+        cart_detail = 'Детали заказа:\n\n'
+    products = product_list(cart.get('items'))
+    cart_detail += products
+    cart_detail += (
+        f'\n💰 Итого: <b>{cart.get("total_price")} ₽</b>\n\n'
+    )
+    if pre_order:
+        cart_detail += (
+            f'Комментарий: {cart.get("comment")}\n\n'
+            f'Телефон: {cart.get("customer").get("phone")}\n'
+        )
+    return cart_detail
+
+
+def get_order_detail(order: dict) -> str:
+    """Детали заказа."""
+    order_detail = 'Детали заказа:\n'
+    products = product_list(order.get('items'))
+    customer = order.get('customer')
+    status = order.get('status')
+    order_detail += (
+        f'{products}'
+        f'\n💰 Итого: <b>{order.get('total_price')} ₽</b>\n\n'
+        f'Комментарий: {order.get("comment")}\n\n'
+        f'Телефон: {customer.get("phone")}\n\n'
+        f'Статус: {OrderStatus.get_icon_with_text(status)}\n\n'
+    )
+    return order_detail

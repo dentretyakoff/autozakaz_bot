@@ -16,6 +16,7 @@ urlpatterns = [
     path(
         f'api/{settings.API_VERSION}/products/', include('products.api.urls')
     ),
+    path(f'api/{settings.API_VERSION}/orders/', include('orders.api.urls')),
     path(
         f'api/{settings.API_VERSION}/schema/',
         SpectacularAPIView.as_view(),
@@ -29,7 +30,8 @@ urlpatterns = [
 
     # Apps
     path('', include('products.urls', namespace='products')),
-    path('', include('about.urls', namespace='about'))
+    path('', include('about.urls', namespace='about')),
+    path('', include('orders.urls', namespace='orders'))
 ]
 
 if settings.DEBUG:

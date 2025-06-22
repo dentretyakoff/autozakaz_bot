@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'import_goods.apps.ImportGoodsConfig',
     'products.apps.ProductsConfig',
     'about.apps.AboutConfig',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +141,7 @@ CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_DEFAULT_QUEUE = 'backend'
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     'visibility_timeout': 86400,
 }
@@ -176,3 +178,11 @@ MEILISEARCH = {
     'DEBUG': DEBUG,
     'DEFAULT_BATCH_SIZE': 1000,
 }
+
+ORDER_MAX_LIFE_TIME = int(os.getenv('ORDER_MAX_LIFE_TIME', 1200))
+# Robokassa
+MERCHANT_LOGIN = os.getenv('MERCHANT_LOGIN')
+MERCHANT_PASSWORD_1 = os.getenv('MERCHANT_PASSWORD_1')
+MERCHANT_PASSWORD_2 = os.getenv('MERCHANT_PASSWORD_2')
+IS_TEST = int(os.getenv('IS_TEST', 1))
+ROBOKASSA_URL = os.getenv('ROBOKASSA_URL', '')

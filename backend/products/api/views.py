@@ -3,7 +3,7 @@ from rest_framework import mixins, viewsets
 
 from products.models import Product
 from products.filters import ProductFilter
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ProductListSerializer
 
 
 class ProductViewSet(mixins.ListModelMixin,
@@ -13,3 +13,8 @@ class ProductViewSet(mixins.ListModelMixin,
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ProductListSerializer
+        return ProductSerializer

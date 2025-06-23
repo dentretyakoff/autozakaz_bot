@@ -56,12 +56,6 @@ class Product(IndexMixin, BaseModel):
         null=True,
         blank=True
     )
-    is_actual = models.BooleanField(
-        default=True,
-        verbose_name='Актуальна',
-        help_text=('Если задан, значит был успешно загружен '
-                   'при последнем импорте')
-    )
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликована',

@@ -38,6 +38,7 @@ class APIImport(ImportBase):
         """Актуализирует цену и срок."""
         updated_products = []
         is_published_products = []
+        unpublished_products = []
 
         try:
             for product in qs:
@@ -52,14 +53,15 @@ class APIImport(ImportBase):
                     is_published_products.append(product)
                 else:
                     product.is_published = False
+                    unpublished_products.append(product)
                 updated_products.append(product)
             Product.objects.bulk_update(
                 updated_products,
                 fields=['price', 'is_published', 'period_min']
             )
-
-            return Product.objects.filter(
+            qs = Product.objects.filter(
                 pk__in=[p.pk for p in is_published_products])
+            return qs, unpublished_products
         except Exception as e:
             logger.error(f'Ошибка актуализации цен по api: {e}')
             return Product.objects.none()

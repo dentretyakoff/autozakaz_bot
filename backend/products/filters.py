@@ -42,17 +42,20 @@ class ProductFilter(django_filters.FilterSet):
             Q(code__iexact=value.upper()) |
             Q(product_code__iexact=value.upper())
         )
-        updated_qs = api_import.update_products(qs)
-        self._update_meilisearch(updated_qs)
+        updated_qs, unpublished_products = api_import.update_products(qs)
+        self._update_meilisearch(updated_qs, unpublished_products)
         return updated_qs
 
-    def _update_meilisearch(self, qs):
+    def _update_meilisearch(self, qs, unpublished_products):
         documents = []
         for p in qs:
             doc = p.meili_serialize() | {'id': str(p.pk), 'pk': str(p.pk)}
             documents.append(doc)
         if documents:
             Product.meilisearch.index.add_documents(documents)
+        if unpublished_products:
+            ids_to_delete = [str(p.pk) for p in unpublished_products]
+            Product.meilisearch.index.delete_documents(ids_to_delete)
 
     def filter_meilisearch(self, queryset, name, value):
         return Product.meilisearch.search(value).filter(is_published=True)

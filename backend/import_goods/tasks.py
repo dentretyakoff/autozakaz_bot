@@ -6,7 +6,7 @@ from django.utils import timezone
 from core import celery_app
 from base.enums import LogLevel
 from .models import ImportTask
-from .import_csv import CSVImport
+from .import_handlers.import_csv import CSVImport
 
 
 logger = logging.getLogger(__name__)

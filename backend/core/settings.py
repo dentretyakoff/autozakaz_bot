@@ -28,8 +28,8 @@ INSTALLED_APPS = [
     'django_meili',
     'users.apps.UsersConfig',
     'base.apps.BaseConfig',
-    'import_goods.apps.ImportGoodsConfig',
     'products.apps.ProductsConfig',
+    'import_goods.apps.ImportGoodsConfig',
     'about.apps.AboutConfig',
     'orders.apps.OrdersConfig',
 ]
@@ -186,3 +186,7 @@ MERCHANT_PASSWORD_1 = os.getenv('MERCHANT_PASSWORD_1')
 MERCHANT_PASSWORD_2 = os.getenv('MERCHANT_PASSWORD_2')
 IS_TEST = int(os.getenv('IS_TEST', 1))
 ROBOKASSA_URL = os.getenv('ROBOKASSA_URL', '')
+
+# Параметры для подключения к api поставщика
+API_SUPPLIER = os.getenv('API_SUPPLIER')
+API_TOKEN_SUPPLIER = os.getenv('API_TOKEN_SUPPLIER')

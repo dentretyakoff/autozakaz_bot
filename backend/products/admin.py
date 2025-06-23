@@ -33,7 +33,6 @@ class ProductAdmin(admin.ModelAdmin):
         'code',
         'price',
         'period_min',
-        'is_actual',
         'is_published'
     )
     readonly_fields = (
@@ -43,7 +42,6 @@ class ProductAdmin(admin.ModelAdmin):
         'product_code',
         'period_min',
         'csv_price',
-        'is_actual',
     )
     list_display_links = ('name',)
     search_fields = (
@@ -53,7 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
         'manufacturer__name',
         'product_code'
     )
-    list_filter = ('is_actual', 'is_published')
+    list_filter = ('is_published',)
     actions = [publish_selected, unpublish_selected]
 
     def has_delete_permission(self, request, obj=None):

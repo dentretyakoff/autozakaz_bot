@@ -1,5 +1,4 @@
 import logging
-from decimal import Decimal
 from pathlib import Path
 
 import wget
@@ -8,10 +7,11 @@ import numpy as np
 from pandas import DataFrame
 from django.conf import settings
 
-from products.models import Manufacturer, Product, PriceMarkup
+from products.models import Manufacturer, Product
 from base.enums import LogLevel
-from .models import CSVPrice, CSVColumn, WordToDrop
-from .constansts import (
+from .base import ImportBase
+from ..models import CSVPrice, CSVColumn, WordToDrop
+from ..constansts import (
     COLUMNS_SORT,
     COLUMNS_DUPLICATES,
     COLUMN_MANUFACTURER,
@@ -26,11 +26,11 @@ from .constansts import (
 logger = logging.getLogger(__name__)
 
 
-class CSVImport:
+class CSVImport(ImportBase):
     def __init__(self, csv_price: CSVPrice):
+        super().__init__()
         self.csv_price = csv_price
         self.url = csv_price.url
-        self.markups = list(PriceMarkup.objects.all())
 
     def download_file(self):
         self.csv_file = wget.download(
@@ -87,7 +87,6 @@ class CSVImport:
         """Основной метод для скачивания и загрузки в БД прайс-листа."""
         try:
             self.download_file()
-            self.csv_price.products.all().update(is_actual=False)
             df_new = self.prepare_csv(self.csv_file)
             if self.csv_file_old:
                 df_old = self.prepare_csv(self.csv_file_old)
@@ -117,23 +116,6 @@ class CSVImport:
                 axis=1)]
 
         return df
-
-    def increase_price(self, price: float) -> int:
-        if price is None:
-            return 0
-
-        percent = 0
-
-        for markup in self.markups:
-            if price <= markup.threshold:
-                percent = markup.percent
-                break
-        else:
-            if self.markups:
-                percent = self.markups[-1].percent
-
-        new_price = Decimal(price) * (1 + Decimal(percent) / 100)
-        return int(round(new_price))
 
     def create_in_db(self, df: DataFrame) -> None:
         """Создает производителей и продукты. bulk_create, bulk_update"""
@@ -173,7 +155,6 @@ class CSVImport:
                         description=row[COLUMN_DESCRIPTION],
                         price=self.increase_price(row[COLUMN_PRICE]),
                         period_min=row[COLUMN_PERIOD_MIN],
-                        is_actual=True,
                     )
                 )
             except Exception as e:
@@ -189,7 +170,7 @@ class CSVImport:
             batch_size=5000,
             update_conflicts=True,
             unique_fields=('manufacturer', 'code', 'csv_price'),
-            update_fields=('description', 'price', 'period_min', 'is_actual')
+            update_fields=('description', 'price', 'period_min')
         )
 
     def update_product_codes(self, batch_size=100_000):

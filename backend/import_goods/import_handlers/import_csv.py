@@ -124,7 +124,7 @@ class CSVImport(ImportBase):
 
     def create_manufacturers(self, manufacturer_names: str) -> None:
         """Создает производителей - bulk_create."""
-        message = f'{self.csv_price} - Создаем производителей'
+        message = f'{self.csv_price} - Создание производителей'
         logger.info(message)
         self.csv_price.logs.create(level=LogLevel.INFO, message=message)
         manufacturers = [
@@ -141,7 +141,7 @@ class CSVImport(ImportBase):
         manufacturers = dict(
             Manufacturer.objects.values_list('name', 'id')
         )
-        message = f'{self.csv_price} - Подготавливаем товары'
+        message = f'{self.csv_price} - Подготовка товаров'
         logger.info(message)
         self.csv_price.logs.create(level=LogLevel.INFO, message=message)
         for row in df.to_dict(orient='records'):
@@ -150,7 +150,6 @@ class CSVImport(ImportBase):
                     Product(
                         manufacturer_id=manufacturers[row[COLUMN_MANUFACTURER]],  # noqa
                         code=row[COLUMN_CODE],
-                        csv_price=self.csv_price,
                         name=row[COLUMN_NAME],
                         description=row[COLUMN_DESCRIPTION],
                         price=self.increase_price(row[COLUMN_PRICE]),
@@ -162,14 +161,14 @@ class CSVImport(ImportBase):
                 logger.error(message)
                 self.csv_price.logs.create(
                     level=LogLevel.ERROR, message=message)
-        message = f'{self.csv_price} - Создаем товары {len(products)}'
+        message = f'{self.csv_price} - Создание товаров {len(products)}'
         logger.info(message)
         self.csv_price.logs.create(level=LogLevel.INFO, message=message)
         Product.objects.bulk_create(
             products,
             batch_size=5000,
             update_conflicts=True,
-            unique_fields=('manufacturer', 'code', 'csv_price'),
+            unique_fields=('manufacturer', 'code'),
             update_fields=('description', 'price', 'period_min')
         )
 

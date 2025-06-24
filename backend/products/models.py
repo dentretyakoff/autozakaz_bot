@@ -4,7 +4,6 @@ from django.db import models
 from django_meili.models import IndexMixin
 
 from base.models import BaseModel
-from import_goods.models import CSVPrice
 
 
 class Manufacturer(BaseModel):
@@ -61,13 +60,6 @@ class Product(IndexMixin, BaseModel):
         verbose_name='Опубликована',
         help_text='Если задан, товар будет отображаться на сайте'
     )
-    csv_price = models.ForeignKey(
-        CSVPrice,
-        verbose_name='Прайс-лист',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='products'
-    )
     product_code = models.CharField(
         max_length=6,
         verbose_name='Артикул товара',
@@ -82,7 +74,7 @@ class Product(IndexMixin, BaseModel):
         ordering = ('name',)
         constraints = [
             models.UniqueConstraint(
-                fields=('manufacturer', 'code', 'csv_price'),
+                fields=('manufacturer', 'code'),
                 name='unique_product_per_csv')
         ]
 

@@ -64,4 +64,4 @@ class APIImport(ImportBase):
             return qs, unpublished_products
         except Exception as e:
             logger.error(f'Ошибка актуализации цен по api: {e}')
-            return Product.objects.none()
+            return Product.objects.none(), unpublished_products

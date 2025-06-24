@@ -41,7 +41,6 @@ class ProductAdmin(admin.ModelAdmin):
         'code',
         'product_code',
         'period_min',
-        'csv_price',
     )
     list_display_links = ('name',)
     search_fields = (

@@ -20,7 +20,6 @@ class ProductListSerializer(serializers.ModelSerializer):
             'price',
             'period_min',
             'is_published',
-            'csv_price',
             'product_code',
         )
 
@@ -41,7 +40,6 @@ class ProductSerializer(ProductListSerializer):
             'price',
             'period_min',
             'is_published',
-            'csv_price',
             'product_code',
             'cartitem_id',
             'quantity',

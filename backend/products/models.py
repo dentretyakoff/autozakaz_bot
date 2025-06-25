@@ -82,8 +82,22 @@ class Product(IndexMixin, BaseModel):
         searchable_fields = ('code', 'product_code')
         filterable_fields = ('is_published',)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._is_published = self.is_published
+
     def __str__(self):
         return f'{self.name}: {self.code}'
+
+    def meili_filter(self):
+        return self.is_published
+
+    def save(self, *args, **kwargs):
+        should_remove = self.pk and self._is_published and not self.is_published  # noqa
+        super().save(*args, **kwargs)
+        if should_remove:
+            self.meilisearch.index.delete_document(str(self.pk))
+        self._is_published = self.is_published
 
     def id_to_base36(self, num: int, min_length: int = 6) -> str:
         chars = string.digits + string.ascii_uppercase

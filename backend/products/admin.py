@@ -14,14 +14,24 @@ class ManufacturerAdmin(TimeStampedAdmin):
 
 @admin.action(description='Опубликовать выбранные')
 def publish_selected(modeladmin, request, queryset):
-    updated = queryset.update(is_published=True)
-    modeladmin.message_user(request, f'Обновлено {updated} объектов.')
+    updated = 0
+    for obj in queryset:
+        if not obj.is_published:
+            obj.is_published = True
+            obj.save()
+            updated += 1
+    modeladmin.message_user(request, f'Опубликовано {updated} объектов.')
 
 
 @admin.action(description='Снять с публикации')
 def unpublish_selected(modeladmin, request, queryset):
-    updated = queryset.update(is_published=False)
-    modeladmin.message_user(request, f'Обновлено {updated} объектов.')
+    updated = 0
+    for obj in queryset:
+        if obj.is_published:
+            obj.is_published = False
+            obj.save()
+            updated += 1
+    modeladmin.message_user(request, f'Снято с публикации {updated} объектов.')
 
 
 @admin.register(Product)
@@ -45,9 +55,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     search_fields = (
         'id',
-        'name',
         'code',
-        'manufacturer__name',
         'product_code'
     )
     list_filter = ('is_published',)

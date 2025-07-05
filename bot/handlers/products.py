@@ -7,7 +7,7 @@ from aiogram.methods import SendMessage
 
 from api import api_backend
 from core.constants import MessagesConstants
-from core.validators import validate_search_query, validate_quantity_is_number
+from core.validators import validate_search_query, validate_quantity
 from handlers.keyboards import (
     back_to_main_keyboard,
     generate_products_buttons,
@@ -126,14 +126,18 @@ async def input_quantity(
         message: Message,
         state: FSMContext) -> SendMessage:
     """Запоминает количество, добавляет товар в корзину."""
-    quantity = validate_quantity_is_number(message.text.strip())
+    data = await state.get_data()
+    product_id = data.get('product')
+    product = api_backend.products.get_product(
+        product_id, message.from_user.id)
+    quantity = validate_quantity(message.text.strip(), product)
     await state.update_data(quantity=quantity)
     data = await state.get_data()
     data['telegram_id'] = message.from_user.id
     await delete_previous_message(data.pop('message_id'), message)
     api_backend.users.add_product(data)
     await answer_with_detail_product(
-        product_id=data.get('product'),
+        product_id=product_id,
         telegram_id=message.from_user.id,
         message=message
     )

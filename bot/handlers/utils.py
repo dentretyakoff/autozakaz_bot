@@ -30,7 +30,7 @@ def make_product_text(product: dict) -> str:
     text += f'🔤 Артикул: {product.get("product_code")}\n'
     qty = product.get('qty') or '-'
     min_qty = product.get('min_qty') or '-'
-    text += f'📦 Наличие, штук: {qty} от {min_qty}\n\n'
+    text += f'📦 Наличие: <b>{qty}</b> от <b>{min_qty}</b> шт.\n\n'
     description = product.get("description")
     if description:
         text += f'📖 Описание:\n{description[:MAX_LEN_DESCRIPTION]}\n\n'

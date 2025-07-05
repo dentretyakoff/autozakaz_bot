@@ -132,7 +132,6 @@ async def input_quantity(
     data['telegram_id'] = message.from_user.id
     await delete_previous_message(data.pop('message_id'), message)
     api_backend.users.add_product(data)
-    await state.clear()
     await answer_with_detail_product(
         product_id=data.get('product'),
         telegram_id=message.from_user.id,

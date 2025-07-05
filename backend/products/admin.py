@@ -51,6 +51,10 @@ class ProductAdmin(admin.ModelAdmin):
         'code',
         'product_code',
         'period_min',
+        'min_qty',
+        'qty',
+        'created_at',
+        'updated_at'
     )
     list_display_links = ('name',)
     search_fields = (

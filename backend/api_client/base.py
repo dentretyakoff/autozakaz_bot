@@ -12,5 +12,9 @@ class APIClientBase:
 
     def _get(self, url) -> Response:
         response = requests.get(url=self.base_url + url, params=self.params)
-        response.raise_for_status()
+        return response
+
+    def _post(self, url, data) -> Response:
+        response = requests.post(
+            url=self.base_url + url, json=data, params=self.params)
         return response

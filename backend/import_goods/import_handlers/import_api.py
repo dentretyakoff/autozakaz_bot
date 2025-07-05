@@ -49,6 +49,8 @@ class APIImport(ImportBase):
                     price = product_data['price']
                     product.price = self.increase_price(Decimal(price))
                     product.period_min = product_data['period_min']
+                    product.min_qty = product_data['min_qty']
+                    product.qty = product_data['qty']
                     product.is_published = True
                     is_published_products.append(product)
                 else:
@@ -57,7 +59,8 @@ class APIImport(ImportBase):
                 updated_products.append(product)
             Product.objects.bulk_update(
                 updated_products,
-                fields=['price', 'is_published', 'period_min']
+                fields=['price', 'is_published',
+                        'period_min', 'min_qty', 'qty']
             )
             qs = Product.objects.filter(
                 pk__in=[p.pk for p in is_published_products])

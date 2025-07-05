@@ -85,3 +85,4 @@ class InputValidationConstants:
         'Вы отправили файл вместо текста, '
         'пожалуйста введите текстовое сообщение.'
     )
+    INCORRECT_QUANTITY = f'Введите число от {MIN_QUANTITY} до {MAX_QUANTITY}'

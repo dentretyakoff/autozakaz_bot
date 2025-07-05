@@ -67,6 +67,18 @@ class Product(IndexMixin, BaseModel):
         blank=True,
         null=True
     )
+    min_qty = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Минимальное количество "min_qty"',
+        help_text=('если min_qty = 2, то order_qty может '
+                   'быть равен 2, или 4, или 8, и т.д.')
+    )
+    qty = models.CharField(
+        null=True,
+        blank=True,
+        verbose_name='Доступно для заказа'
+    )
 
     class Meta:
         verbose_name = 'Деталь'

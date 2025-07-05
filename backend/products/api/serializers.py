@@ -43,6 +43,8 @@ class ProductSerializer(ProductListSerializer):
             'product_code',
             'cartitem_id',
             'quantity',
+            'min_qty',
+            'qty',
             'total_price'
         )
 

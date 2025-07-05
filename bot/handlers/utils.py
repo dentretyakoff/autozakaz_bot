@@ -27,7 +27,10 @@ def make_product_text(product: dict) -> str:
     text += f'🏷 {product.get("name")}\n\n'
     text += f'🏭 Производитель: {product.get("manufacturer")}\n'
     text += f'🌐 Код: {product.get("code")}\n'
-    text += f'🔤 Артикул: {product.get("product_code")}\n\n'
+    text += f'🔤 Артикул: {product.get("product_code")}\n'
+    qty = product.get('qty') or '-'
+    min_qty = product.get('min_qty') or '-'
+    text += f'📦 Наличие: <b>{qty}</b> от <b>{min_qty}</b> шт.\n\n'
     description = product.get("description")
     if description:
         text += f'📖 Описание:\n{description[:MAX_LEN_DESCRIPTION]}\n\n'

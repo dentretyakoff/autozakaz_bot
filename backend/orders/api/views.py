@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from orders.enums import OrderStatus
 from orders.models import Order
 from payment import robokassa
+from orders.tasks import create_orders
 from .serializers import (
     OrderCreateSerializer,
     OrderRetrieveSerializer,
@@ -75,5 +76,6 @@ class OrderViewSet(mixins.CreateModelMixin,
             order = get_object_or_404(Order, pk=order_id)
             order.status = OrderStatus.PAID
             order.save()
+            create_orders.apply_async(args=[order.pk])
             return Response(sign, status=status.HTTP_200_OK)
         return Response(sign, status=status.HTTP_400_BAD_REQUEST)

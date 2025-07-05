@@ -91,10 +91,15 @@ class OrderItem(BaseModel):
         'Цена',
         help_text='Фиксируется в момент оформления заказа',
     )
+    comment = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name='Комментарий'
+    )
 
     class Meta:
         verbose_name = 'Товар заказа'
-        verbose_name_plural = 'Товары заказов'
+        verbose_name_plural = 'Товары заказа'
 
     def __str__(self):
         return f'{self.product}'

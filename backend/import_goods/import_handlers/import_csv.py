@@ -59,6 +59,10 @@ class CSVImport(ImportBase):
             subset=COLUMNS_DUPLICATES, keep='first', inplace=True)
         df = df.dropna(subset=[COLUMN_MANUFACTURER, COLUMN_CODE, COLUMN_NAME])
 
+        df = df[df[COLUMN_NAME].str.len() >= 3]
+        df = df[~df[COLUMN_NAME].str.match(r'^(.)\1+$')]
+        df = df[df[COLUMN_NAME].str.contains(r'[A-Za-zА-Яа-я0-9]', na=False)]
+
         df = df.loc[(df[COLUMN_PERIOD_MIN] >= self.csv_price.period_min)]
         if self.csv_price.new_period_min:
             df[COLUMN_PERIOD_MIN] = self.csv_price.new_period_min

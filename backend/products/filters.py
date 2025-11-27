@@ -42,9 +42,12 @@ class ProductFilter(django_filters.FilterSet):
             Q(code__iexact=value.upper()) |
             Q(product_code__iexact=value.upper())
         )
+        if not qs.exists():
+            return qs
         updated_qs, unpublished_products = api_import.update_products(qs)
         self._update_meilisearch(updated_qs, unpublished_products)
-        return updated_qs
+
+        return updated_qs if updated_qs.exists() else qs
 
     def _update_meilisearch(self, qs, unpublished_products):
         documents = []
